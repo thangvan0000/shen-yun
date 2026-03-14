@@ -105,4 +105,20 @@ class EventSessionController extends Controller
 
         return redirect()->to('/admin/sessions')->with('status', 'Đã xoá suất diễn.');
     }
+
+    /**
+     * Toggle the registration block flag for a session.
+     */
+    public function toggleBlock(EventSession $session)
+    {
+        $session->update([
+            'is_registration_blocked' => !$session->is_registration_blocked,
+        ]);
+
+        $msg = $session->is_registration_blocked
+            ? 'Đã tạm hoãn nhận đăng ký cho suất này.'
+            : 'Đã mở lại nhận đăng ký cho suất này.';
+
+        return redirect()->to('/admin/sessions')->with('status', $msg);
+    }
 }

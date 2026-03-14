@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-semibold tracking-tight">Suất diễn</h1>
-            <p class="mt-1 text-sm text-neutral-600">Quản lý danh sách suất diễn.</p>
+            <p class="mt-1 text-sm text-neutral-600">Quản lý danh sách suất diễn. Bật <span class="font-medium">Tạm hoãn</span> để ngừng nhận đăng ký tuần đó.</p>
         </div>
 
         <a
@@ -15,13 +15,20 @@
         </a>
     </div>
 
+    @if (session('status'))
+        <div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <div class="mt-6 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
         <table class="w-full text-sm">
             <thead class="bg-neutral-50 text-left text-xs font-semibold text-neutral-600">
                 <tr>
                     <th class="px-4 py-3">Suất diễn</th>
                     <th class="px-4 py-3">Capacity</th>
-                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Trạng thái</th>
+                    <th class="px-4 py-3">Nhận đăng ký</th>
                     <th class="px-4 py-3"></th>
                 </tr>
             </thead>
@@ -30,7 +37,7 @@
                     @php
                         $remaining = max(0, $s->capacity_total - $s->capacity_reserved);
                     @endphp
-                    <tr>
+                    <tr class="{{ $s->is_registration_blocked ? 'bg-amber-50' : '' }}">
                         <td class="px-4 py-3">
                             <div class="font-medium">{{ $s->venue->name }}</div>
                             <div class="text-xs text-neutral-600">{{ $s->starts_at->format('d/m/Y H:i') }}</div>
@@ -45,7 +52,40 @@
                             </span>
                         </td>
                         <td class="px-4 py-3">
+                            @if ($s->is_registration_blocked)
+                                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524L13.477 14.89zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"/></svg>
+                                    Tạm hoãn
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+                                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                    Đang mở
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3">
                             <div class="flex items-center justify-end gap-2">
+                                <form method="post" action="{{ url('/admin/sessions/'.$s->id.'/toggle-block') }}">
+                                    @csrf
+                                    @if ($s->is_registration_blocked)
+                                        <button
+                                            class="rounded-lg border border-emerald-300 bg-white px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-50"
+                                            title="Mở lại nhận đăng ký"
+                                        >
+                                            Mở lại
+                                        </button>
+                                    @else
+                                        <button
+                                            class="rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-50"
+                                            onclick="return confirm('Tạm hoãn nhận đăng ký cho suất này?')"
+                                            title="Tạm hoãn nhận đăng ký"
+                                        >
+                                            Tạm hoãn
+                                        </button>
+                                    @endif
+                                </form>
+
                                 <a
                                     href="{{ url('/admin/sessions/'.$s->id.'/edit') }}"
                                     class="rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50"
@@ -64,7 +104,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td class="px-4 py-10 text-center text-neutral-600" colspan="4">Chưa có suất diễn.</td>
+                        <td class="px-4 py-10 text-center text-neutral-600" colspan="5">Chưa có suất diễn.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -75,4 +115,3 @@
         {{ $sessions->links() }}
     </div>
 @endsection
-

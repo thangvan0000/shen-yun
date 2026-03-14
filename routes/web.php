@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\EventSessionController;
 use App\Http\Controllers\Admin\RegistrationController;
 use App\Http\Controllers\Public\RegisterAccessController;
 use App\Http\Controllers\Public\RegistrationWizardController;
@@ -46,4 +47,12 @@ Route::middleware(['admin.authed'])->group(function () {
     Route::get('/admin/registrations', [RegistrationController::class, 'index']);
     Route::get('/admin/registrations/export.csv', [RegistrationController::class, 'exportCsv']);
     Route::get('/admin/registrations/export.xls', [RegistrationController::class, 'exportXls']);
+
+    Route::get('/admin/sessions', [EventSessionController::class, 'index']);
+    Route::get('/admin/sessions/create', [EventSessionController::class, 'create']);
+    Route::post('/admin/sessions', [EventSessionController::class, 'store']);
+    Route::get('/admin/sessions/{session}/edit', [EventSessionController::class, 'edit']);
+    Route::put('/admin/sessions/{session}', [EventSessionController::class, 'update']);
+    Route::delete('/admin/sessions/{session}', [EventSessionController::class, 'destroy']);
+    Route::post('/admin/sessions/{session}/toggle-block', [EventSessionController::class, 'toggleBlock']);
 });

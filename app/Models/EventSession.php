@@ -14,10 +14,12 @@ class EventSession extends Model
         'capacity_total',
         'capacity_reserved',
         'status',
+        'is_registration_blocked',
     ];
 
     protected $casts = [
         'starts_at' => 'datetime',
+        'is_registration_blocked' => 'boolean',
     ];
 
     public function venue(): BelongsTo

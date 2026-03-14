@@ -43,7 +43,11 @@ class RegistrationWizardController extends Controller
         return $start;
     }
 
-    private function ensureSingleActiveSundaySession(int $venueId): EventSession
+    /**
+     * Ensure the two upcoming Sunday sessions exist and return the active (unblocked) one,
+     * or null if both sessions are admin-blocked.
+     */
+    private function ensureSingleActiveSundaySession(int $venueId): ?EventSession
     {
         $now = Carbon::now(self::EVENT_TZ);
         // Base Sunday (this upcoming Sunday; today if already Sunday)
@@ -56,7 +60,7 @@ class RegistrationWizardController extends Controller
 
         // Cutoff: Saturday 22:30 (after this time -> roll to next Sunday)
         $cutoff = $baseSunday->copy()->subDay()->setTime(self::CUTOFF_HOUR, self::CUTOFF_MINUTE, 0);
-        $activeStart = $now->greaterThanOrEqualTo($cutoff) ? $nextSunday : $baseSunday;
+        $preferNext = $now->greaterThanOrEqualTo($cutoff);
 
         // Find sessions on the same day (in event TZ) so we can "snap" time without breaking existing registrations.
         $dayStart = $baseSunday->copy()->startOfDay();
@@ -89,6 +93,7 @@ class RegistrationWizardController extends Controller
                 'capacity_total' => 36,
                 'capacity_reserved' => 0,
                 'status' => 'inactive',
+                'is_registration_blocked' => false,
             ]);
         }
 
@@ -105,6 +110,7 @@ class RegistrationWizardController extends Controller
                 'capacity_total' => 36,
                 'capacity_reserved' => 0,
                 'status' => 'inactive',
+                'is_registration_blocked' => false,
             ]);
         }
 
@@ -117,12 +123,29 @@ class RegistrationWizardController extends Controller
             $s->capacity_reserved = $reserved;
         }
 
-        // Activate exactly one session.
-        $activeId = ($activeStart->toDateTimeString() === $baseSunday->toDateTimeString()) ? $baseSession->id : $nextSession->id;
-        EventSession::query()->where('venue_id', $venueId)->update(['status' => 'inactive']);
-        EventSession::query()->whereKey($activeId)->update(['status' => 'active']);
+        // Determine which session should be active, respecting admin block flags.
+        // Primary: cutoff-based preference. Fallback: try the other week if primary is blocked.
+        // If both are blocked, mark all inactive and return null (registration unavailable).
+        $baseSession = $baseSession->fresh();
+        $nextSession = $nextSession->fresh();
 
-        return $activeId === $baseSession->id ? $baseSession->fresh() : $nextSession->fresh();
+        $primarySession = $preferNext ? $nextSession : $baseSession;
+        $fallbackSession = $preferNext ? $baseSession : $nextSession;
+
+        if (!$primarySession->is_registration_blocked) {
+            $activeSession = $primarySession;
+        } elseif (!$fallbackSession->is_registration_blocked) {
+            $activeSession = $fallbackSession;
+        } else {
+            // Both weeks are blocked by admin – close all and signal unavailability.
+            EventSession::query()->where('venue_id', $venueId)->update(['status' => 'inactive']);
+            return null;
+        }
+
+        EventSession::query()->where('venue_id', $venueId)->update(['status' => 'inactive']);
+        EventSession::query()->whereKey($activeSession->id)->update(['status' => 'active']);
+
+        return $activeSession->fresh();
     }
 
     public function step1()
@@ -150,17 +173,24 @@ class RegistrationWizardController extends Controller
         }
 
         $sessions = collect();
+        $registrationBlocked = false;
         if ($selectedVenueId) {
             // Only allow choosing 1 week: keep exactly one active Sunday session,
             // and auto-roll to next week when within 24h of the showtime.
+            // Returns null when admin has blocked all upcoming weeks.
             $session = $this->ensureSingleActiveSundaySession((int) $selectedVenueId);
-            $sessions = collect([$session]);
+            if ($session !== null) {
+                $sessions = collect([$session]);
+            } else {
+                $registrationBlocked = true;
+            }
         }
 
         return view('public.register.step1', [
             'venues' => $venues,
             'sessions' => $sessions,
             'draft' => $draft,
+            'registrationBlocked' => $registrationBlocked,
         ]);
     }
 
@@ -182,6 +212,12 @@ class RegistrationWizardController extends Controller
         if (!$session) {
             throw ValidationException::withMessages([
                 'event_session_id' => 'Suất diễn không hợp lệ.',
+            ]);
+        }
+
+        if ($session->is_registration_blocked) {
+            throw ValidationException::withMessages([
+                'event_session_id' => 'Suất diễn này đang tạm hoãn nhận đăng ký.',
             ]);
         }
 
@@ -324,6 +360,12 @@ class RegistrationWizardController extends Controller
             if ($session->status !== 'active') {
                 throw ValidationException::withMessages([
                     'event_session_id' => 'Suất diễn đã đóng.',
+                ]);
+            }
+
+            if ($session->is_registration_blocked) {
+                throw ValidationException::withMessages([
+                    'event_session_id' => 'Suất diễn này đang tạm hoãn nhận đăng ký.',
                 ]);
             }
 
