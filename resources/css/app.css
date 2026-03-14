@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer components {
+    /* Global background for the whole site */
+    body {
+        background-color: #07070a;
+        /* Full screen (cover) + keep full frame (contain) */
+        background:
+            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
+            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed;
+    }
+
+    /* HD dark background for the RSVP flow only */
+    body.rsvp-shell {
+        background:
+            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
+            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed,
+            radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
+            radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
+            radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
+            radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
+            linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+    }
+
+    /* Access page: zoom-out background slightly */
+    body.rsvp-shell.rsvp-access {
+        background:
+            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
+            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed,
+            radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
+            radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
+            radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
+            radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
+            linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+    }
+
+    /* Mobile: fixed backgrounds can feel "zoomed" and janky */
+    @media (max-width: 640px) {
+        body {
+            background:
+                url("/images/shen-yun-3.png") center bottom / contain no-repeat scroll,
+                url("/images/shen-yun-3.png") center bottom / cover no-repeat scroll;
+        }
+
+        body.rsvp-shell {
+            background-attachment: scroll;
+        }
+
+        body.rsvp-shell.rsvp-access {
+            background:
+                url("/images/shen-yun-3.png") center bottom / contain no-repeat scroll,
+                url("/images/shen-yun-3.png") center bottom / cover no-repeat scroll,
+                radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
+                radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
+                radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
+                radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
+                linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+        }
+    }
+
+    body.rsvp-shell::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.14;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+        background-size: 420px 420px;
+        transform: translateZ(0);
+    }
+
+    body.rsvp-shell::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(900px 600px at 50% 20%, rgba(0, 0, 0, 0.10), transparent 55%),
+            radial-gradient(1200px 900px at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.55) 86%, rgba(0, 0, 0, 0.82));
+    }
+
+    /* Keep all RSVP content above overlays */
+    body.rsvp-shell > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .rsvp-shell {
+        @apply min-h-dvh text-neutral-100/85 flex flex-col;
+    }
+
+    /* Default: keep content starting near top (better for long multi-step forms) */
+    .rsvp-shell main {
+        @apply w-full;
+    }
+
+    /* Access page (/login): center the whole block (title + panel) */
+    body.rsvp-shell.rsvp-access .rsvp-shell {
+        @apply items-center justify-center gap-6 px-4 py-10 sm:gap-8;
+    }
+
+    body.rsvp-shell.rsvp-access .rsvp-top {
+        @apply pt-0 pb-0;
+    }
+
+    body.rsvp-shell.rsvp-access main {
+        @apply px-0 pb-0;
+    }
+
+    .rsvp-top {
+        @apply relative pt-8 pb-5 text-center sm:pt-10 sm:pb-6;
+    }
+
+    .rsvp-top::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.65) 0%,
+                rgba(0, 0, 0, 0.38) 38%,
+                rgba(0, 0, 0, 0.0) 100%
+            );
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+
+    .rsvp-top > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .rsvp-title {
+        @apply text-4xl font-semibold tracking-[0.25em] text-[#d9b76f] drop-shadow-[0_3px_18px_rgba(0,0,0,0.85)] sm:text-5xl md:text-6xl;
+    }
+
+    .rsvp-subtitle {
+        @apply mt-4 text-sm text-neutral-100/85 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] sm:text-base;
+    }
+
+    .rsvp-panel {
+        @apply mx-auto w-full max-w-xl rounded-3xl border border-[#d9b76f]/12 bg-black/4 p-5 shadow-[0_10px_26px_rgba(0,0,0,0.28)] backdrop-blur-sm sm:p-6;
+    }
+
+    .rsvp-heading {
+        @apply text-center text-xl font-semibold tracking-tight text-[#f3e2b6] sm:text-2xl;
+    }
+
+    .rsvp-label {
+        @apply text-sm font-semibold text-neutral-100/70;
+    }
+
+    .rsvp-input {
+        @apply mt-2 w-full rounded-2xl border border-neutral-500/22 bg-black/10 px-4 py-2.5 text-sm text-neutral-100 outline-none focus:border-[#d9b76f]/70;
+    }
+
+    .rsvp-select {
+        @apply mt-2 w-full rounded-2xl border border-neutral-500/22 bg-black/10 px-4 py-2.5 text-sm text-neutral-100 outline-none focus:border-[#d9b76f]/70;
+    }
+
+    .rsvp-card {
+        @apply rounded-2xl border border-neutral-500/22 bg-black/10 p-4 text-left transition hover:border-[#d9b76f]/45 hover:bg-black/16;
+    }
+
+    .rsvp-card-selected {
+        @apply border-[#d9b76f]/70 bg-black/24 shadow-[0_0_0_1px_rgba(217,183,111,0.28),0_10px_30px_rgba(0,0,0,0.45)];
+    }
+
+    .btn-gold {
+        @apply inline-flex items-center justify-center rounded-2xl bg-[#d9b76f] px-7 py-3.5 text-sm font-semibold tracking-[0.22em] text-black shadow-[0_10px_26px_rgba(0,0,0,0.40)] hover:bg-[#e3c57e] active:translate-y-px;
+    }
+
+    .btn-dark {
+        @apply inline-flex items-center justify-center rounded-2xl border border-neutral-500/36 bg-black/20 px-7 py-3.5 text-sm font-semibold tracking-[0.18em] text-neutral-200 hover:bg-black/30;
+    }
+
+    .rsvp-pill {
+        @apply inline-flex items-center gap-2 rounded-2xl border border-[#d9b76f]/35 bg-black/25 px-4 py-2 text-xs text-[#f3e2b6];
+    }
+
+    .rsvp-banner {
+        @apply mb-5 rounded-2xl border border-[#d9b76f]/22 bg-black/14 px-4 py-3 text-sm text-[#f3e2b6];
+    }
+
+    .rsvp-counter-btn {
+        @apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-500/22 bg-black/10 text-xl text-neutral-100 hover:border-[#d9b76f]/60;
+    }
+
+    .rsvp-counter-value {
+        @apply inline-flex h-10 min-w-16 items-center justify-center rounded-2xl border border-neutral-500/22 bg-black/9 px-3.5 text-base font-semibold text-neutral-100;
+    }
+}
