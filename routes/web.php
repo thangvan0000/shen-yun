@@ -55,9 +55,9 @@ Route::middleware(['admin.authed'])->group(function () {
     Route::get('/admin/sessions', [EventSessionController::class, 'index']);
     Route::get('/admin/sessions/create', [EventSessionController::class, 'create']);
     Route::post('/admin/sessions', [EventSessionController::class, 'store']);
+    Route::delete('/admin/sessions/bulk-destroy', [EventSessionController::class, 'destroyMultiple']);
     Route::get('/admin/sessions/{session}/edit', [EventSessionController::class, 'edit']);
     Route::put('/admin/sessions/{session}', [EventSessionController::class, 'update']);
     Route::delete('/admin/sessions/{session}', [EventSessionController::class, 'destroy']);
-    Route::delete('/admin/sessions/bulk-destroy', [EventSessionController::class, 'destroyMultiple']);
     Route::post('/admin/sessions/{session}/toggle-block', [EventSessionController::class, 'toggleBlock']);
 });
