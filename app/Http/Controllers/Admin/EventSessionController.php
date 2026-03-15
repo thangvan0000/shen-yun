@@ -32,8 +32,19 @@ class EventSessionController extends Controller
     {
         $venues = Venue::query()->orderBy('name')->get();
 
+        $defaultVenue = Venue::query()
+            ->whereRaw('LOWER(name) = ?', ['nx-lp 96 vinhomes grand park'])
+            ->first();
+
+        $defaultStartsAt = Carbon::now()
+            ->startOfWeek(Carbon::SUNDAY)
+            ->setTime(14, 30, 0);
+
         return view('admin.sessions.create', [
             'venues' => $venues,
+            'default_venue_id' => $defaultVenue?->id,
+            'default_starts_at' => $defaultStartsAt->format('Y-m-d\TH:i'),
+            'default_capacity' => 36,
         ]);
     }
 
