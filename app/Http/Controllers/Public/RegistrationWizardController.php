@@ -408,6 +408,10 @@ class RegistrationWizardController extends Controller
             ]);
         });
 
+        if (!$registration) {
+            return redirect()->back()->withInput();
+        }
+
         $registration->load('eventSession.venue');
         Mail::to($registration->email)->send(new RegistrationConfirmed($registration));
 
