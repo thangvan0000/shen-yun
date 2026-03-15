@@ -59,7 +59,9 @@
                         <tr class="hover:bg-black/3">
                             <td class="px-4 py-3 font-mono text-xs text-neutral-700">#{{ $r->id }}</td>
                             <td class="px-4 py-3">
-                                <div class="font-semibold text-neutral-900">{{ $r->full_name }}</div>
+                                <a href="{{ url('/admin/registrations/'.$r->id.'/edit') }}" class="block min-h-[44px] min-w-[44px] flex items-center font-semibold text-neutral-900 hover:underline">
+                                    {{ $r->full_name }}
+                                </a>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="text-neutral-900">{{ $r->email }}</div>
