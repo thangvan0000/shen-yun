@@ -36,17 +36,11 @@
     /* Global background for the whole site */
     body {
         background-color: #07070a;
-        /* Full screen (cover) + keep full frame (contain) */
-        background:
-            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
-            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed;
     }
 
     /* HD dark background for the RSVP flow only */
     body.rsvp-shell {
         background:
-            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
-            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed,
             radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
             radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
             radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
@@ -57,8 +51,6 @@
     /* Access page: zoom-out background slightly */
     body.rsvp-shell.rsvp-access {
         background:
-            url("/images/shen-yun-3.png") center bottom / contain no-repeat fixed,
-            url("/images/shen-yun-3.png") center bottom / cover no-repeat fixed,
             radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
             radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
             radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
@@ -69,9 +61,7 @@
     /* Mobile: fixed backgrounds can feel "zoomed" and janky */
     @media (max-width: 640px) {
         body {
-            background:
-                url("/images/shen-yun-3.png") center bottom / contain no-repeat scroll,
-                url("/images/shen-yun-3.png") center bottom / cover no-repeat scroll;
+            background-color: #07070a;
         }
 
         body.rsvp-shell {
@@ -80,8 +70,6 @@
 
         body.rsvp-shell.rsvp-access {
             background:
-                url("/images/shen-yun-3.png") center bottom / contain no-repeat scroll,
-                url("/images/shen-yun-3.png") center bottom / cover no-repeat scroll,
                 radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
                 radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
                 radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
@@ -90,17 +78,6 @@
         }
     }
 
-    body.rsvp-shell::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        opacity: 0.14;
-        mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
-        background-size: 420px 420px;
-        transform: translateZ(0);
-    }
 
     body.rsvp-shell::after {
         content: '';
