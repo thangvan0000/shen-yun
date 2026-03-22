@@ -158,15 +158,16 @@ class RegistrationWizardController extends Controller
     {
         $data = $request->validate([
             'full_name'        => ['required', 'string', 'max:255'],
-            'email'            => ['required', 'email', 'max:255'],
-            'phone_country'    => ['nullable', 'string', 'max:8'],
-            'phone_number'     => ['nullable', 'string', 'max:32'],
+            'email'            => ['nullable', 'email', 'max:255'],
+            'phone_country'    => ['required', 'string', 'max:8'],
+            'phone_number'     => ['required', 'string', 'regex:/^[0-9]{9,11}$/'],
             'attend_with_guest' => ['nullable', 'boolean'],
         ]);
 
         $phone   = null;
         $country = trim((string) ($data['phone_country'] ?? ''));
         $number  = preg_replace('/\D+/', '', (string) ($data['phone_number'] ?? ''));
+        $number  = ltrim($number, '0');
         if ($number !== '') {
             $country = $country !== '' ? $country : '+84';
             if (!str_starts_with($country, '+')) {
@@ -259,7 +260,7 @@ class RegistrationWizardController extends Controller
     public function submit()
     {
         $draft    = Session::get(self::DRAFT_KEY, []);
-        $required = ['venue_id', 'event_session_id', 'full_name', 'email', 'adult_count', 'ntl_count', 'ntl_new_count', 'child_count', 'total_count'];
+        $required = ['venue_id', 'event_session_id', 'full_name', 'phone', 'adult_count', 'ntl_count', 'ntl_new_count', 'child_count', 'total_count'];
 
         foreach ($required as $key) {
             if (!array_key_exists($key, $draft)) {
@@ -297,7 +298,7 @@ class RegistrationWizardController extends Controller
             return Registration::query()->create([
                 'event_session_id'  => $session->id,
                 'full_name'         => $draft['full_name'],
-                'email'             => $draft['email'],
+                'email'             => $draft['email'] ?? null,
                 'phone'             => $draft['phone'] ?? null,
                 'adult_count'       => (int) $draft['adult_count'],
                 'ntl_count'         => (int) $draft['ntl_count'],
@@ -313,7 +314,9 @@ class RegistrationWizardController extends Controller
         }
 
         $registration->load('eventSession.venue');
-        Mail::to($registration->email)->send(new RegistrationConfirmed($registration));
+        if ($registration->email) {
+            Mail::to($registration->email)->send(new RegistrationConfirmed($registration));
+        }
 
         Session::forget(self::DRAFT_KEY);
 

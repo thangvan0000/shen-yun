@@ -19,7 +19,7 @@
 
         {{-- Venue selector --}}
         <div>
-            <div class="rsvp-label">Địa điểm tổ chức</div>
+            <div class="rsvp-label">Địa điểm tổ chức <span class="text-red-500">*</span></div>
             <select
                 id="venue_id"
                 name="venue_id"
@@ -38,7 +38,7 @@
 
         {{-- Session picker --}}
         <div>
-            <div class="rsvp-label">Ngày diễn ra sự kiện</div>
+            <div class="rsvp-label">Ngày diễn ra sự kiện <span class="text-red-500">*</span></div>
 
             @if ($sessions->isEmpty())
                 <div class="mt-3 rounded-2xl border border-neutral-500/30 bg-black/25 px-4 py-3 text-sm text-neutral-200/80">

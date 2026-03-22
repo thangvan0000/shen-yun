@@ -225,6 +225,19 @@
         @apply inline-flex h-10 min-w-16 items-center justify-center rounded-2xl border border-neutral-500/22 bg-black/9 px-3.5 text-base font-semibold text-neutral-100;
     }
 
+    .rsvp-counter-input {
+        @apply h-10 w-16 rounded-2xl border border-neutral-500/22 bg-black/9 text-center text-base font-semibold text-neutral-100 outline-none focus:border-[#d9b76f]/60;
+        /* Hide spin buttons for a cleaner look while keeping numeric functionality */
+        appearance: textfield;
+        -moz-appearance: textfield;
+    }
+
+    .rsvp-counter-input::-webkit-outer-spin-button,
+    .rsvp-counter-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     /* Admin Redesign Components */
     .admin-card {
         @apply bg-surface-container-lowest rounded-xl shadow-sm border-0 overflow-hidden;

@@ -55,10 +55,19 @@
 
                     <div class="flex items-center gap-3">
                         <button type="button" class="rsvp-counter-btn" data-counter-dec aria-label="Giảm {{ $label }}">−</button>
-                        <div class="rsvp-counter-value" data-counter-display>{{ $values[$name] }}</div>
-                        <button type="button" class="rsvp-counter-btn" data-counter-inc aria-label="Tăng {{ $label }}">+</button>
+                        
+                        <input 
+                            type="number" 
+                            name="{{ $name }}" 
+                            value="{{ $values[$name] }}" 
+                            min="0"
+                            step="1"
+                            data-counter-input 
+                            data-counter-display
+                            class="rsvp-counter-input" 
+                        />
 
-                        <input type="hidden" name="{{ $name }}" value="{{ $values[$name] }}" data-counter-input />
+                        <button type="button" class="rsvp-counter-btn" data-counter-inc aria-label="Tăng {{ $label }}">+</button>
                     </div>
                 </div>
             @endforeach

@@ -78,19 +78,39 @@ function initCounters() {
         const input = row.querySelector('[data-counter-input]');
         const display = row.querySelector('[data-counter-display]');
         const v = clamp(Number(nextValue) || 0);
-        if (input) input.value = String(v);
-        if (display) display.textContent = String(v);
+
+        if (input && input.value !== String(v)) {
+            input.value = String(v);
+        }
+        if (display && display !== input) {
+            display.textContent = String(v);
+        }
         computeTotal();
     };
 
     rows.forEach((row) => {
         const input = row.querySelector('[data-counter-input]');
-        const display = row.querySelector('[data-counter-display]');
         const dec = row.querySelector('[data-counter-dec]');
         const inc = row.querySelector('[data-counter-inc]');
 
-        const current = clamp(Number(input?.value || display?.textContent || 0));
-        setRowValue(row, current);
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                // Prevent -, e, E, ., and , as we only want non-negative integers
+                if (['-', 'e', 'E', '.', ','].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            input.addEventListener('input', () => {
+                // We don't use setRowValue here to avoid overwriting cursor position while typing,
+                // but we still need to compute total and maybe clamp on blur.
+                computeTotal();
+            });
+
+            input.addEventListener('blur', () => {
+                setRowValue(row, input.value);
+            });
+        }
 
         dec?.addEventListener('click', () => setRowValue(row, currentValue(row) - 1));
         inc?.addEventListener('click', () => setRowValue(row, currentValue(row) + 1));
@@ -98,7 +118,7 @@ function initCounters() {
 
     function currentValue(row) {
         const input = row.querySelector('[data-counter-input]');
-        return clamp(Number(input?.value || 0));
+        return Number(input?.value || 0);
     }
 
     computeTotal();

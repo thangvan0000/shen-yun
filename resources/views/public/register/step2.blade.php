@@ -12,7 +12,7 @@
         $phone = (string) old('phone', $draft['phone'] ?? '');
         $parsedCountry = null;
         $parsedNumber = null;
-        if (preg_match('/^(\\+\\d{1,3})(\\d+)$/', $phone, $m)) {
+        if (preg_match('/^(\\+(?:84|1|82|81|65))(\\d+)$/', $phone, $m)) {
             $parsedCountry = $m[1];
             $parsedNumber = $m[2];
         }
@@ -24,7 +24,7 @@
         @csrf
 
         <div>
-            <div class="rsvp-label">Họ &amp; Tên</div>
+            <div class="rsvp-label">Họ &amp; Tên <span class="text-red-500">*</span></div>
             <input
                 id="full_name"
                 name="full_name"
@@ -41,13 +41,12 @@
                 name="email"
                 type="email"
                 value="{{ old('email', $draft['email'] ?? '') }}"
-                required
                 class="rsvp-input"
             />
         </div>
 
         <div>
-            <div class="rsvp-label">Số liên hệ (Signal/Phone)</div>
+            <div class="rsvp-label">Số liên hệ (Signal/Phone) <span class="text-red-500">*</span></div>
             <div class="mt-2 grid grid-cols-3 gap-3">
                 <select name="phone_country" class="rsvp-select col-span-1">
                     <option value="+84" {{ $phoneCountry === '+84' ? 'selected' : '' }}>+84 VN</option>
@@ -57,10 +56,12 @@
                     <option value="+65" {{ $phoneCountry === '+65' ? 'selected' : '' }}>+65 SG</option>
                 </select>
                 <input
+                    type="tel"
                     name="phone_number"
                     inputmode="numeric"
                     value="{{ $phoneNumber }}"
                     placeholder="Nhập số…"
+                    required
                     class="rsvp-input col-span-2 mt-0"
                 />
             </div>
