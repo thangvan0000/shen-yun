@@ -36,19 +36,8 @@
                             </div>
                         @endif
 
-                        @if ($errors->any())
-                            <div class="mb-5 rounded-2xl border border-rose-400/30 bg-rose-950/35 px-4 py-3 text-sm text-rose-100">
-                                <div class="font-semibold tracking-wide">Vui lòng kiểm tra lại</div>
-                                <ul class="mt-2 list-disc space-y-1 pl-5">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        {{ $slot ?? '' }}
                         @yield('content')
+
                     </div>
                 </main>
             </div>
@@ -230,7 +219,81 @@
                     </div>
                 </footer>
             </div>
-        </body>
-    @endif
+        @endif
+
+        <div id="toast-container" class="toast-container"></div>
+
+        <script>
+            function showToast(messages) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                if (!Array.isArray(messages)) messages = [messages];
+                
+                messages.forEach(msg => {
+                    const toast = document.createElement('div');
+                    toast.className = 'toast-notification';
+                    toast.innerHTML = `
+                        <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5 opacity-90">error</span>
+                        <div class="flex-1 leading-relaxed">${msg}</div>
+                    `;
+                    
+                    container.appendChild(toast);
+
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        toast.classList.add('hide');
+                        setTimeout(() => toast.remove(), 400);
+                    }, 5000);
+                    
+                    // Allow manual click to dismiss
+                    toast.onclick = () => {
+                        toast.classList.add('hide');
+                        setTimeout(() => toast.remove(), 400);
+                    };
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Show server-side errors
+                const serverErrors = @json($errors->all());
+                if (serverErrors && serverErrors.length > 0) {
+                    showToast(serverErrors);
+                    
+                    // Also try to find fields with errors and highlight them                    
+                    const errorFields = @json($errors->keys());
+                    errorFields.forEach(field => {
+                        const input = document.getElementsByName(field)[0] || document.getElementById(field);
+                        // Skip inputs on step 3 (they handle errors differently)
+                        if (input && !input.classList.contains('rsvp-counter-input')) {
+                            input.classList.add('is-invalid');
+                        }
+                    });
+                }
+
+                // Intercept form submissions for client-side feedback
+                document.querySelectorAll('form').forEach(form => {
+                    if (form.hasAttribute('formnovalidate')) return;
+                    
+                    form.addEventListener('submit', function(e) {
+                        if (!form.checkValidity()) {
+                            e.preventDefault();
+                            showToast('Vui lòng kiểm tra lại các thông tin bắt buộc.');
+                            
+                            // Highlight invalid fields
+                            form.querySelectorAll(':invalid').forEach(field => {
+                                field.classList.add('is-invalid');
+                                field.addEventListener('input', function() {
+                                    if (this.checkValidity()) {
+                                        this.classList.remove('is-invalid');
+                                    }
+                                }, { once: true });
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
 </html>
 

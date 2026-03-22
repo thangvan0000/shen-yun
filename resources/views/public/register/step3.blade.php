@@ -39,13 +39,8 @@
         </div>
     @endif
 
-    <form
-        method="post"
-        action="{{ url('/register/step3') }}"
-        class="mt-6 space-y-6"
-        data-counter-root
-        data-counter-self="{{ $attendWithGuest ? 1 : 0 }}"
-    >
+    <form method="post" action="{{ url('/register/step3') }}" class="mt-6 space-y-6" data-counter-root
+        data-counter-self="{{ $attendWithGuest ? 1 : 0 }}" novalidate>
         @csrf
 
         <div class="space-y-5">
@@ -54,20 +49,14 @@
                     <div class="text-lg font-semibold text-neutral-100/85">{{ $label }}</div>
 
                     <div class="flex items-center gap-3">
-                        <button type="button" class="rsvp-counter-btn" data-counter-dec aria-label="Giảm {{ $label }}">−</button>
-                        
-                        <input 
-                            type="number" 
-                            name="{{ $name }}" 
-                            value="{{ $values[$name] }}" 
-                            min="0"
-                            step="1"
-                            data-counter-input 
-                            data-counter-display
-                            class="rsvp-counter-input" 
-                        />
+                        <button type="button" class="rsvp-counter-btn" data-counter-dec
+                            aria-label="Giảm {{ $label }}">−</button>
 
-                        <button type="button" class="rsvp-counter-btn" data-counter-inc aria-label="Tăng {{ $label }}">+</button>
+                        <input type="number" name="{{ $name }}" value="{{ $values[$name] }}" min="0" step="1" data-counter-input
+                            data-counter-display class="rsvp-counter-input" />
+
+                        <button type="button" class="rsvp-counter-btn" data-counter-inc
+                            aria-label="Tăng {{ $label }}">+</button>
                     </div>
                 </div>
             @endforeach

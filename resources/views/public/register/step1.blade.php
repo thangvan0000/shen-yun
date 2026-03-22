@@ -14,7 +14,7 @@
         $selectedSessionId = old('event_session_id', $draft['event_session_id'] ?? '');
     @endphp
 
-    <form method="post" action="{{ url('/register/step1') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ url('/register/step1') }}" class="mt-6 space-y-6" novalidate>
         @csrf
 
         {{-- Venue selector --}}
@@ -23,7 +23,7 @@
             <select
                 id="venue_id"
                 name="venue_id"
-                class="rsvp-select"
+                class="rsvp-select @error('venue_id') is-invalid @enderror"
                 required
                 onchange="window.location='{{ url('/register') }}?venue_id=' + this.value"
             >

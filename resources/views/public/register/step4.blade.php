@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <form method="post" action="{{ url('/register/submit') }}" class="mt-6 flex items-center justify-between gap-4">
+    <form method="post" action="{{ url('/register/submit') }}" class="mt-6 flex items-center justify-between gap-4" novalidate>
         @csrf
         <a href="{{ url('/register/step3') }}" class="btn-dark px-6 py-3 text-xs">QUAY LẠI</a>
         <button class="btn-gold">GỬI ĐĂNG KÝ</button>

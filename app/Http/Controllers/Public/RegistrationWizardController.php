@@ -162,7 +162,10 @@ class RegistrationWizardController extends Controller
             'phone_country'    => ['required', 'string', 'max:8'],
             'phone_number'     => ['required', 'string', 'regex:/^[0-9]{9,11}$/'],
             'attend_with_guest' => ['nullable', 'boolean'],
-        ]);
+        ],
+    [
+        'phone_number.regex' => 'Số điện thoại không hợp lệ.',
+    ]);
 
         $phone   = null;
         $country = trim((string) ($data['phone_country'] ?? ''));

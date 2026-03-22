@@ -8,7 +8,7 @@
                 Nhập <span class="font-medium">AdminPassword</span> để vào khu quản trị.
             </p>
 
-            <form method="post" action="{{ url('/admin/login') }}" class="mt-5 space-y-4">
+            <form method="post" action="{{ url('/admin/login') }}" class="mt-5 space-y-4" novalidate>
                 @csrf
 
                 <div>
@@ -20,7 +20,7 @@
                             type="password"
                             autocomplete="current-password"
                             required
-                            class="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 pr-16 text-sm outline-none ring-0 focus:border-neutral-900"
+                            class="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2 pr-16 text-sm outline-none ring-0 focus:border-neutral-900 @error('password') is-invalid @enderror"
                         />
                         <button
                             type="button"
