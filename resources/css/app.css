@@ -276,7 +276,5 @@
 input.rsvp-input.is-invalid,
 select.rsvp-select.is-invalid,
 input.rsvp-counter-input.is-invalid {
-    border-color: #f43f5e !important;
-    box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.25) !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+       border-color: #fb7171 !important;
 }

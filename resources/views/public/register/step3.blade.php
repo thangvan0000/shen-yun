@@ -14,7 +14,7 @@
         $defaults = [
             // NOTE: counters represent number of guests (do NOT include registrant).
             // If "attend_with_guest" is on, the system will auto-add 1 seat for the registrant.
-            'adult_count' => 1,
+            'adult_count' => 0,
             'ntl_count' => 0,
             'ntl_new_count' => 0,
             'child_count' => 0,
@@ -37,10 +37,13 @@
         <div class="rsvp-banner mt-6">
             ✨ Vui lòng tính cả số lượng của bạn vì bạn có đi cùng khách
         </div>
+    @else
+        <div class="mb-3 p-3 rounded-md border border-red-700/40 bg-red-900/30 text-red-200 text-sm">
+            ❗Vui lòng <strong>không</strong> tính số lượng của bạn vì bạn <strong>không</strong> đi cùng khách
+        </div>
     @endif
-
     <form method="post" action="{{ url('/register/step3') }}" class="mt-6 space-y-6" data-counter-root
-        data-counter-self="{{ $attendWithGuest ? 1 : 0 }}" novalidate>
+        data-counter-self="0" novalidate>
         @csrf
 
         <div class="space-y-5">
