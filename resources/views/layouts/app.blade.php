@@ -28,7 +28,7 @@
                     <div class="rsvp-subtitle">Trải nghiệm hành trình âm nhạc &amp; vũ đạo thư giãn cuối tuần</div>
                 </div>
 
-                <main class="px-4 pb-12">
+                <main class="pb-12">
                     <div class="rsvp-panel">
 
                         @yield('content')
