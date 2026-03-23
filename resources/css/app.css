@@ -328,80 +328,104 @@
     .guest-infor {
         background: linear-gradient(145deg, #233425, #0E1F11);
         border: 1px solid rgba(200, 168, 112, 0.2);
-        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.4);
-
-        .border-b {
-            border-image-slice: 1;
-            border-image-source: linear-gradient(to right, transparent, var(--color-champagne-gold) 50%, transparent);
-            border-bottom-width: 1px;
-            border-style: solid;
-            border-top: 0;
-            border-left: 0;
-            border-right: 0;
-        }
+        box-shadow: inset 0 2px 10px rgb(14, 31, 17, 0.5), 0 5px 15px rgba(14, 31, 17, 0.4);
     }
 
-    /* Admin Redesign Components */
-    .admin-card {
-        @apply bg-surface-container-lowest rounded-xl shadow-sm border-0 overflow-hidden;
+    .border-b {
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to right, transparent, var(--color-champagne-gold) 50%, transparent);
+        border-bottom-width: 1px;
+        border-style: solid;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+}
+
+/* Admin Redesign Components */
+.admin-container {
+    color: var(--color-deep-forest);
+    .admin-header {
+        @apply border-b border-white/20 bg-deep-forest text-white/80;
     }
 
-    .admin-table {
-        @apply w-full text-left border-collapse;
+    .admin-main {
+        @apply mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:py-4;
     }
 
-    .admin-table thead {
-        @apply bg-surface-container-low/50;
+    .login-container {
+        @apply mt-10 rounded-xl;
+        box-shadow: 0 2px 10px rgba(105, 124, 105, 0.5), 0 5px 15px rgba(105, 124, 105, 0.4);
     }
 
-    .admin-table th {
-        @apply px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant/70;
+    .rsvp-field {
+        @apply outline-none focus:border-[#d9b76f]/70;
+        padding-inline: calc(var(--spacing) * 4);
+        padding-block: calc(var(--spacing) * 2.5);
+        font-size: var(--text-sm);
+        line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+}
+
+.admin-card {
+    @apply bg-surface-container-lowest rounded-xl shadow-sm border-0 overflow-hidden;
+}
+
+.admin-table {
+    @apply w-full text-left border-collapse;
+}
+
+.admin-table thead {
+    @apply bg-surface-container-low/50;
+}
+
+.admin-table th {
+    @apply px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant/70;
+}
+
+.admin-table td {
+    @apply px-6 py-5;
+}
+
+.admin-table tr {
+    @apply hover:bg-surface-container-low/30 transition-colors;
+}
+
+.btn-admin-primary {
+    @apply px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full text-sm font-bold active:scale-95 transition-all flex items-center gap-2;
+}
+
+.btn-admin-secondary {
+    @apply px-6 py-2.5 bg-inverse-surface text-inverse-on-surface rounded-full text-sm font-bold active:scale-95 transition-all flex items-center gap-2;
+}
+
+.badge-status {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+}
+
+/* Toast Notifications */
+#toast-container.toast-container {
+    @apply fixed bottom-8 right-6 z-[100] flex flex-col gap-3 pointer-events-none;
+}
+
+.toast-notification {
+    @apply pointer-events-auto flex items-start gap-3 rounded-xl border border-rose-400/30 bg-rose-200/90 px-4 py-3.5 text-sm text-rose-900 shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-y-0 opacity-100 min-w-[280px] max-w-md;
+    animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-notification.hide {
+    @apply opacity-0 translate-y-2 scale-95;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(1rem) scale(0.95);
     }
 
-    .admin-table td {
-        @apply px-6 py-5;
-    }
-
-    .admin-table tr {
-        @apply hover:bg-surface-container-low/30 transition-colors;
-    }
-
-    .btn-admin-primary {
-        @apply px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full text-sm font-bold active:scale-95 transition-all flex items-center gap-2;
-    }
-
-    .btn-admin-secondary {
-        @apply px-6 py-2.5 bg-inverse-surface text-inverse-on-surface rounded-full text-sm font-bold active:scale-95 transition-all flex items-center gap-2;
-    }
-
-    .badge-status {
-        @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
-    }
-
-    /* Toast Notifications */
-    #toast-container.toast-container {
-        @apply fixed bottom-8 right-6 z-[100] flex flex-col gap-3 pointer-events-none;
-    }
-
-    .toast-notification {
-        @apply pointer-events-auto flex items-start gap-3 rounded-xl border border-rose-400/30 bg-rose-200/90 px-4 py-3.5 text-sm text-rose-900 shadow-2xl backdrop-blur-md transition-all duration-300 transform translate-y-0 opacity-100 min-w-[280px] max-w-md;
-        animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .toast-notification.hide {
-        @apply opacity-0 translate-y-2 scale-95;
-    }
-
-    @keyframes toast-in {
-        from {
-            opacity: 0;
-            transform: translateY(1rem) scale(0.95);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -410,5 +434,5 @@
 input.rsvp-input.is-invalid,
 select.rsvp-select.is-invalid,
 input.rsvp-counter-input.is-invalid {
-    border-color: #fb7171 !important;
+    border-color: #ba1a1a !important;
 }

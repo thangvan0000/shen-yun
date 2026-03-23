@@ -158,8 +158,8 @@
         </body>
     @else
         <body class="min-h-dvh bg-transparent text-neutral-900">
-            <div class="min-h-dvh flex flex-col">
-                <header class="border-b border-white/20 bg-white/70 backdrop-blur-md">
+            <div class="min-h-dvh flex flex-col admin-container">
+                <header class="admin-header">
                     <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:py-4">
                         <a href="{{ url('/') }}" class="font-semibold tracking-tight text-lg">
                             {{ $appTitle }}
@@ -190,17 +190,6 @@
                     @if (session('status'))
                         <div class="mb-6 rounded-2xl border border-emerald-200/60 bg-emerald-50/90 px-4 py-3 text-emerald-900 backdrop-blur">
                             {{ session('status') }}
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="mb-6 rounded-2xl border border-rose-200/70 bg-rose-50/90 px-4 py-3 text-rose-900 backdrop-blur">
-                            <div class="font-medium">Có lỗi xảy ra</div>
-                            <ul class="mt-2 list-disc pl-5 text-sm">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
                         </div>
                     @endif
 

@@ -31,8 +31,8 @@
             <div class="border-b border-yellow-800/50 pb-2 mb-2">
                 <div class="text-xs tracking-[0.2em] text-neutral-200/60">TRẠNG THÁI THAM DỰ</div>
                 <div
-                    class="mt-1 text-base font-semibold {{ !empty($draft['attend_with_guest']) ? 'text-emerald-300' : 'text-neutral-200/80' }}">
-                    {{ !empty($draft['attend_with_guest']) ? 'Sẽ tham dự cùng khách' : 'Không đi cùng khách' }}
+                    class="mt-1 text-base font-semibold {{ !empty($draft['attend_with_guest']) ? 'text-emerald-300' : ' text-orange-300' }}">
+                    {{ !empty($draft['attend_with_guest']) ? 'Sẽ tham dự cùng khách!' : 'Chỉ đăng ký cho khách!' }}
                 </div>
             </div>
 

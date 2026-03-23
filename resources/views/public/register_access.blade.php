@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-gold w-full">
+        <button type="submit" class="btn btn-gold w-full">
             TIẾP TỤC
         </button>
 
