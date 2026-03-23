@@ -4,7 +4,7 @@
     @include('public.register.partials.stepper', ['currentStep' => 4])
 
     <div class="text-center">
-        <div class="rsvp-heading">Thêm ghi chú</div>
+        <div class="rsvp-heading text-champagne-gold">Thêm ghi chú</div>
         <div class="mt-2 text-sm text-neutral-200/75">Kiểm tra lại thông tin trước khi gửi đăng ký.</div>
     </div>
 
@@ -53,10 +53,10 @@
         </div>
     </div>
 
-    <form method="post" action="{{ url('/register/submit') }}" class="mt-6 flex items-center justify-between gap-4" novalidate>
+    <form method="post" action="{{ url('/register/submit') }}" class="mt-6 flex items-center justify-between gap-4 flex-wrap" novalidate>
         @csrf
-        <a href="{{ url('/register/step3') }}" class="btn-dark px-6 py-3 text-xs">QUAY LẠI</a>
-        <button class="btn-gold">GỬI ĐĂNG KÝ</button>
+        <a href="{{ url('/register/step3') }}" class="btn btn-dark flex-1">QUAY LẠI</a>
+        <button type="submit" class="btn btn-gold flex-1">GỬI ĐĂNG KÝ</button>
     </form>
 @endsection
 

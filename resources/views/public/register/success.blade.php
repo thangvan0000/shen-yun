@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="text-center">
-        <div class="rsvp-heading">Đăng ký thành công</div>
+        <div class="rsvp-heading text-champagne-gold">Đăng ký thành công</div>
         <div class="mt-2 text-sm text-neutral-200/75">
             Cảm ơn {{ $registration->full_name }} — mã đăng ký <span class="font-mono font-semibold text-[#f3e2b6]">#{{ $registration->id }}</span>
         </div>
@@ -30,9 +30,9 @@
         </div>
     </div>
 
-    <div class="mt-6 flex items-center justify-between gap-4">
-        <a href="{{ url('/') }}" class="btn-dark px-6 py-3 text-xs">TRANG CHỦ</a>
-        <a href="{{ url('/login') }}" class="btn-gold">ĐĂNG KÝ MỚI</a>
+    <div class="mt-6 flex items-center justify-between gap-4 flex-wrap">
+        <a href="{{ url('/') }}" class="btn btn-dark flex-1">TRANG CHỦ</a>
+        <a href="{{ url('/register') }}" class="btn btn-gold flex-1">ĐĂNG KÝ MỚI</a>
     </div>
 @endsection
 

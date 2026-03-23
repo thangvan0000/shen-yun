@@ -124,9 +124,126 @@ function initCounters() {
     computeTotal();
 }
 
+function initCustomSelects() {
+    const selects = document.querySelectorAll('.custom-select');
+    if (!selects.length) return;
+
+    const closeAll = (except = null) => {
+        selects.forEach((s) => {
+            if (s !== except) s.classList.remove('open');
+        });
+    };
+
+    const getOptions = (container) => {
+        return Array.from(container.querySelectorAll('.custom-select-option'));
+    };
+
+    selects.forEach((select) => {
+        const trigger = select.querySelector('.custom-select-trigger');
+        const dropdown = select.querySelector('.custom-select-dropdown');
+        const hiddenInput = select.querySelector('input[type="hidden"]');
+        const options = getOptions(dropdown);
+
+        const updateDisplay = () => {
+            const selected = options.find((o) => o.classList.contains('selected'));
+            if (selected) {
+                trigger.textContent = selected.textContent;
+            }
+        };
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = select.classList.contains('open');
+            closeAll(isOpen ? null : select);
+            select.classList.toggle('open');
+            if (select.classList.contains('open')) {
+                trigger.setAttribute('aria-expanded', 'true');
+                options.forEach((o) => o.classList.remove('highlighted'));
+                const selected = options.find((o) => o.classList.contains('selected'));
+                if (selected) {
+                    selected.classList.add('highlighted');
+                    selected.scrollIntoView({ block: 'nearest' });
+                }
+            } else {
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        options.forEach((option) => {
+            option.addEventListener('click', () => {
+                options.forEach((o) => o.classList.remove('selected', 'highlighted'));
+                option.classList.add('selected', 'highlighted');
+                const value = option.dataset.value ?? '';
+                if (hiddenInput) hiddenInput.value = value;
+                select.classList.remove('open');
+                trigger.setAttribute('aria-expanded', 'false');
+                const onchangeHandler = trigger.dataset.onchange;
+                if (onchangeHandler) {
+                    try {
+                        // Execute handler with hidden input value available as 'value'
+                        const handler = new Function('value', 'window', onchangeHandler);
+                        handler(value, window);
+                    } catch (e) {
+                        console.error('Error executing onchange handler:', e);
+                    }
+                }
+                trigger.dispatchEvent(new Event('change', { bubbles: true }));
+                updateDisplay();
+            });
+        });
+
+        trigger.addEventListener('keydown', (e) => {
+            if (!select.classList.contains('open')) {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    select.classList.add('open');
+                    options.forEach((o) => o.classList.remove('highlighted'));
+                    const selected = options.find((o) => o.classList.contains('selected'));
+                    if (selected) selected.classList.add('highlighted');
+                    else options[0]?.classList.add('highlighted');
+                }
+                return;
+            }
+
+            const highlighted = options.find((o) => o.classList.contains('highlighted'));
+            const idx = highlighted ? options.indexOf(highlighted) : -1;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                highlighted?.classList.remove('highlighted');
+                const next = options[Math.min(idx + 1, options.length - 1)];
+                next.classList.add('highlighted');
+                next.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                highlighted?.classList.remove('highlighted');
+                const prev = options[Math.max(idx - 1, 0)];
+                prev.classList.add('highlighted');
+                prev.scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (highlighted) {
+                    highlighted.click();
+                }
+            } else if (e.key === 'Escape') {
+                select.classList.remove('open');
+            }
+        });
+
+        updateDisplay();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.custom-select')) {
+            closeAll();
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initPasswordToggles();
     redirectToAccessOnReload();
     initSessionCards();
     initCounters();
+    initCustomSelects();
 });
