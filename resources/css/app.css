@@ -35,33 +35,23 @@
 @layer components {
     /* Global background for the whole site */
     body {
-        background-color: #07070a;
+        background-color: #506351;
     }
 
     /* HD dark background for the RSVP flow only */
     body.rsvp-shell {
-        background:
-            radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
-            radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
-            radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
-            radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
-            linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+        background-color: #506351;
     }
 
     /* Access page: zoom-out background slightly */
     body.rsvp-shell.rsvp-access {
-        background:
-            radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
-            radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
-            radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
-            radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
-            linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+        background-color: #506351;
     }
 
     /* Mobile: fixed backgrounds can feel "zoomed" and janky */
     @media (max-width: 640px) {
         body {
-            background-color: #07070a;
+            background-color: #506351;
         }
 
         body.rsvp-shell {
@@ -69,12 +59,7 @@
         }
 
         body.rsvp-shell.rsvp-access {
-            background:
-                radial-gradient(1400px 900px at 50% 8%, rgba(217, 183, 111, 0.16), transparent 55%),
-                radial-gradient(1100px 900px at 12% 35%, rgba(217, 183, 111, 0.10), transparent 60%),
-                radial-gradient(900px 800px at 88% 55%, rgba(217, 183, 111, 0.08), transparent 58%),
-                radial-gradient(1300px 900px at 50% 120%, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 1)),
-                linear-gradient(180deg, rgba(8, 8, 10, 1), rgba(0, 0, 0, 1));
+            background-color: #506351;
         }
     }
 
@@ -84,9 +69,6 @@
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background:
-            radial-gradient(900px 600px at 50% 20%, rgba(0, 0, 0, 0.10), transparent 55%),
-            radial-gradient(1200px 900px at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.55) 86%, rgba(0, 0, 0, 0.82));
     }
 
     /* Keep all RSVP content above overlays */
@@ -126,15 +108,6 @@
         position: absolute;
         inset: 0;
         pointer-events: none;
-        background:
-            linear-gradient(
-                180deg,
-                rgba(0, 0, 0, 0.65) 0%,
-                rgba(0, 0, 0, 0.38) 38%,
-                rgba(0, 0, 0, 0.0) 100%
-            );
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
     }
 
     .rsvp-top > * {
@@ -159,7 +132,7 @@
     }
 
     .rsvp-label {
-        @apply text-sm font-semibold text-neutral-100/70;
+        @apply text-sm font-semibold text-neutral-100/80;
     }
 
     .rsvp-input {
@@ -179,7 +152,7 @@
     }
 
     .btn-gold {
-        @apply inline-flex items-center justify-center rounded-2xl bg-[#d9b76f] px-7 py-3.5 text-sm font-semibold tracking-[0.22em] text-black shadow-[0_10px_26px_rgba(0,0,0,0.40)] hover:bg-[#e3c57e] active:translate-y-px;
+        @apply w-full inline-flex items-center justify-center rounded-2xl bg-[#d9b76f] px-7 py-3.5 text-sm font-semibold tracking-[0.22em] text-black shadow-[0_10px_26px_rgba(0,0,0,0.40)] hover:bg-[#e3c57e] active:translate-y-px;
     }
 
     .btn-dark {

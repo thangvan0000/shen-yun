@@ -30,11 +30,6 @@
 
                 <main class="px-4 pb-12">
                     <div class="rsvp-panel">
-                        @if (session('status'))
-                            <div class="mb-5 rounded-2xl border border-emerald-400/30 bg-emerald-950/40 px-4 py-3 text-sm text-emerald-100">
-                                {{ session('status') }}
-                            </div>
-                        @endif
 
                         @yield('content')
 

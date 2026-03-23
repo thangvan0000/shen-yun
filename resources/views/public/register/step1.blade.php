@@ -94,17 +94,7 @@
             @enderror
         </div>
 
-        <div class="flex items-center justify-between gap-4 pt-2">
-            <button
-                type="submit"
-                formaction="{{ url('/register/logout') }}"
-                formmethod="post"
-                formnovalidate
-                class="btn-dark px-6 py-3 text-xs"
-            >
-                THOÁT
-            </button>
-
+        <div class="flex justify-center pt-2">
             <button class="btn-gold">TIẾP TỤC</button>
         </div>
     </form>
