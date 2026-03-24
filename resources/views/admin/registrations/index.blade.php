@@ -35,9 +35,17 @@
                         id="phoneFilter"
                         placeholder="Tìm số điện thoại..."
                         value="{{ $phoneFilter ?? '' }}"
-                        class="w-auto min-w-[200px] rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-4 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
+                        class="w-auto min-w-[200px] rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-9 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
                         onkeypress="if(event.key === 'Enter') applyFilters()"
                     >
+                    <button
+                        onclick="applyFilters()"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-500 hover:text-neutral-800 cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="relative">
