@@ -36,6 +36,7 @@
                     </div>
                 </main>
             </div>
+            <x-floating-contact-widget />
         </body>
     @elseif ($isAdmin)
         <body class="min-h-dvh bg-background text-on-surface antialiased font-sans">
