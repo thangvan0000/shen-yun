@@ -80,8 +80,8 @@
                     <tr class="[&>th]:px-5 [&>th]:py-4">
                         <th class="w-20 pl-6">Mã</th>
                         <th class="w-56">Người mời</th>
-                        <th class="w-72">Gmail</th>
                         <th class="w-40">SĐT</th>
+                        <th class="w-72">Gmail</th>
                         <th class="w-36">Trình chiếu</th>
                         <th class="w-24">Khách</th>
                         <th class="w-24">NTL</th>
@@ -89,8 +89,7 @@
                         <th class="w-24">Trẻ em</th>
                         <th class="w-24">Tổng</th>
                         <th class="w-24">Trạng thái</th>
-                        <th class="w-36">Tạo lúc</th>
-                        <th class="w-20 pr-6"></th>
+                        <th class="w-20 pr-6">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-neutral-200/70">
@@ -101,9 +100,6 @@
                                 <a href="{{ url('/admin/registrations/'.$r->id.'/edit') }}" class="block min-h-[44px] min-w-[44px] flex items-center font-semibold text-neutral-900 hover:underline">
                                     {{ $r->full_name }}
                                 </a>
-                            </td>
-                            <td class="px-5 py-4">
-                                <div class="text-neutral-900">{{ $r->email }}</div>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 @if($r->phone)
@@ -120,24 +116,32 @@
                                     <div class="text-neutral-900">—</div>
                                 @endif
                             </td>
+                            <td class="px-5 py-4">
+                                <div class="text-neutral-900">{{ $r->email }}</div>
+                            </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <div class="font-semibold text-neutral-900">{{ $r->eventSession->starts_at->format('d/m/Y H:i') }}</div>
                             </td>
-                            <td class="px-5 py-4 font-semibold text-neutral-900">{{ $r->adult_count }}</td>
-                            <td class="px-5 py-4 font-semibold text-neutral-900">{{ $r->ntl_count }}</td>
-                            <td class="px-5 py-4 font-semibold text-neutral-900">{{ $r->ntl_new_count }}</td>
-                            <td class="px-5 py-4 font-semibold text-neutral-900">{{ $r->child_count }}</td>
-                            <td class="px-5 py-4 font-semibold text-neutral-900">{{ $r->total_count }}</td>
-                            <td class="px-5 py-4">
+                            <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->adult_count }}</td>
+                            <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->ntl_count }}</td>
+                            <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->ntl_new_count }}</td>
+                            <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->child_count }}</td>
+                            <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->total_count }}</td>
+                            <td class="px-5 py-4 text-center">
                                 @if($r->status === 'confirmed')
                                     <span class="text-lg" title="Đã xác nhận">✅</span>
                                 @else
                                     <span class="text-lg" title="Đã hủy">❌</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4 text-neutral-800 whitespace-nowrap">{{ $r->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="pr-6 py-4">
-                                <a href="{{ url('/admin/registrations/'.$r->id.'/edit') }}" class="text-sm text-neutral-700 hover:underline">Sửa</a>
+                            <td class="pr-6 py-4 text-center">
+                                <a
+                                    href="{{ url('/admin/registrations/'.$r->id.'/edit') }}"
+                                    class="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors"
+                                    title="Sửa"
+                                >
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                </a>
                             </td>
                         </tr>
                     @empty

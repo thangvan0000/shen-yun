@@ -1,6 +1,6 @@
 @php
     $items = [
-        ['url' => '/admin', 'label' => 'Danh sách', 'icon' => 'list_alt'],
+        ['url' => '/admin/registrations', 'label' => 'Danh sách', 'icon' => 'list_alt'],
         ['url' => '/admin/venues', 'label' => 'Địa điểm', 'icon' => 'location_on'],
         ['url' => '/admin/sessions', 'label' => 'Trình chiếu', 'icon' => 'present_to_all'],
     ];
@@ -9,11 +9,7 @@
 <div class="space-y-1">
     @foreach ($items as $item)
         @php
-            if ($item['url'] === '/admin') {
-                $active = request()->is('admin');
-            } else {
-                $active = request()->is(ltrim($item['url'], '/').'*');
-            }
+            $active = request()->is(ltrim($item['url'], '/').'*');
         @endphp
         <a 
             href="{{ url($item['url']) }}" 
