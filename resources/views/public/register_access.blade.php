@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Mở khoá đăng ký'])
+@extends('layouts.app', ['title' => 'Thưởng thức âm nhạc & nghệ thuật thuần chính!'])
 
 @section('content')
     <div class="text-center">
