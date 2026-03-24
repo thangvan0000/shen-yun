@@ -19,8 +19,8 @@ return new class extends Migration
         \Illuminate\Support\Facades\DB::statement("
             UPDATE event_sessions 
             SET registration_status = CASE 
-                WHEN status = 'active' AND (is_registration_blocked IS NULL OR is_registration_blocked = 0) THEN 'open'
-                WHEN status = 'active' AND is_registration_blocked = 1 THEN 'paused'
+                WHEN status = 'active' AND (is_registration_blocked IS NULL OR is_registration_blocked = false) THEN 'open'
+                WHEN status = 'active' AND is_registration_blocked = true THEN 'paused'
                 ELSE 'hidden'
             END
         ");
@@ -46,8 +46,8 @@ return new class extends Migration
                 ELSE 'active'
             END,
             is_registration_blocked = CASE 
-                WHEN registration_status = 'paused' THEN 1
-                ELSE 0
+                WHEN registration_status = 'paused' THEN true
+                ELSE false
             END
         ");
 

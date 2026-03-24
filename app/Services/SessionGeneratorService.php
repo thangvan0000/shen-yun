@@ -134,7 +134,7 @@ class SessionGeneratorService
             
             $startsAt = $weekStart->copy()
                 ->addDays($daysFromMonday)
-                ->setTimeFromTimeString($slot->time)
+                ->setTimeFromTimeString($slot->start_time)
                 ->timezone($venueTimezone);
             
             // Check for existing EventSession at same venue_id and starts_at

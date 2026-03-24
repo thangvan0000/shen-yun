@@ -9,6 +9,7 @@ use App\Models\Venue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
 
 class SessionTemplateController extends Controller
 {
@@ -53,26 +54,25 @@ class SessionTemplateController extends Controller
             'venue_id' => 'required|exists:venues,id|unique:session_templates,venue_id',
             'slots' => 'required|array|min:1',
             'slots.*.day_of_week' => 'required|integer|between:0,6',
-            'slots.*.time' => 'required|date_format:H:i',
+            'slots.*.start_time' => 'required|date_format:H:i',
             'slots.*.default_capacity' => 'required|integer|min:1',
         ]);
 
-        DB::transaction(function () use ($request) {
-            // Create the SessionTemplate
-            $template = SessionTemplate::create([
-                'venue_id' => $request->venue_id,
-            ]);
+        // Create the SessionTemplate (without transaction)
+        $template = SessionTemplate::create([
+            'venue_id' => $request->venue_id,
+        ]);
 
-            // Create associated TemplateSlots
-            foreach ($request->slots as $slotData) {
-                TemplateSlot::create([
-                    'session_template_id' => $template->id,
-                    'day_of_week' => $slotData['day_of_week'],
-                    'time' => $slotData['time'],
-                    'default_capacity' => $slotData['default_capacity'],
-                ]);
-            }
-        });
+        // Create associated TemplateSlots
+        foreach ($request->slots as $slotData) {
+            DB::insert(sprintf(
+                "INSERT INTO template_slots (session_template_id, day_of_week, start_time, default_capacity, created_at, updated_at) VALUES (%d, %d, '%s', %d, now(), now())",
+                $template->id,
+                (int) $slotData['day_of_week'],
+                $slotData['start_time'],
+                (int) $slotData['default_capacity']
+            ));
+        }
 
         return redirect()->to('/admin/sessions')->with('status', 'Đã tạo mẫu lịch chiếu.');
     }
@@ -106,7 +106,7 @@ class SessionTemplateController extends Controller
             'venue_id' => 'required|exists:venues,id',
             'slots' => 'required|array|min:1',
             'slots.*.day_of_week' => 'required|integer|between:0,6',
-            'slots.*.time' => 'required|date_format:H:i',
+            'slots.*.start_time' => 'required|date_format:H:i',
             'slots.*.default_capacity' => 'required|integer|min:1',
         ]);
 
@@ -123,12 +123,13 @@ class SessionTemplateController extends Controller
 
             // Create new slots from request data
             foreach ($request->slots as $slotData) {
-                TemplateSlot::create([
-                    'session_template_id' => $template->id,
-                    'day_of_week' => $slotData['day_of_week'],
-                    'time' => $slotData['time'],
-                    'default_capacity' => $slotData['default_capacity'],
-                ]);
+                DB::insert(sprintf(
+                    "INSERT INTO template_slots (session_template_id, day_of_week, start_time, default_capacity, created_at, updated_at) VALUES (%d, %d, '%s', %d, now(), now())",
+                    $template->id,
+                    (int) $slotData['day_of_week'],
+                    $slotData['start_time'],
+                    (int) $slotData['default_capacity']
+                ));
             }
         });
 

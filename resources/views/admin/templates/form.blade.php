@@ -40,7 +40,7 @@
             @php
                 $oldSlots = old('slots', $template?->slots->toArray() ?? []);
                 if (empty($oldSlots)) {
-                    $oldSlots = [['day_of_week' => '', 'time' => '', 'default_capacity' => '']];
+                    $oldSlots = [['day_of_week' => '', 'start_time' => '', 'default_capacity' => '']];
                 }
             @endphp
 
@@ -61,8 +61,8 @@
                     <div class="flex-1">
                         <input
                             type="time"
-                            name="slots[{{ $index }}][time]"
-                            value="{{ $slot['time'] ?? '' }}"
+                            name="slots[{{ $index }}][start_time]"
+                            value="{{ $slot['start_time'] ?? '' }}"
                             required
                             class="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-900"
                         />
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="flex-1">
                 <input
                     type="time"
-                    name="slots[${slotIndex}][time]"
+                    name="slots[${slotIndex}][start_time]"
                     required
                     class="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-900"
                 />

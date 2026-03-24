@@ -13,7 +13,7 @@ class TemplateSlot extends Model
     protected $fillable = [
         'session_template_id',
         'day_of_week',
-        'time',
+        'start_time',
         'default_capacity',
     ];
 
@@ -32,7 +32,7 @@ class TemplateSlot extends Model
         return [
             'session_template_id' => 'required|exists:session_templates,id',
             'day_of_week' => 'required|integer|between:0,6',
-            'time' => 'required|date_format:H:i',
+            'start_time' => 'required|date_format:H:i',
             'default_capacity' => 'required|integer|min:1',
         ];
     }
