@@ -16,7 +16,7 @@
                 </div>
 
                 <a
-                    href="{{ url('/admin/registrations/export.xls') }}?status={{ $statusFilter }}&session_id={{ $sessionIdFilter }}"
+                    href="{{ url('/admin/registrations/export.xls') }}?status={{ $statusFilter }}&session_id={{ $sessionIdFilter }}&phone={{ $phoneFilter }}"
                     class="inline-flex items-center justify-center rounded-3xl bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800"
                 >
                     Xuất Excel
@@ -27,12 +27,28 @@
                 <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="text"
+                        id="phoneFilter"
+                        placeholder="Tìm số điện thoại..."
+                        value="{{ $phoneFilter ?? '' }}"
+                        class="w-auto min-w-[200px] rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-4 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
+                        onkeypress="if(event.key === 'Enter') applyFilters()"
+                    >
+                </div>
+
+                <div class="relative">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <select
                         id="sessionFilter"
-                        class="w-auto min-w-[200px] appearance-none rounded-full border border-neutral-200 bg-white py-2 pl-9 pr-8 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
+                        class="w-auto min-w-[200px] appearance-none rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-8 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
                         onchange="applyFilters()"
                     >
                         <option value="">Trình chiếu: Tất cả</option>
@@ -57,7 +73,7 @@
                     </div>
                     <select
                         id="statusFilter"
-                        class="w-auto min-w-[180px] appearance-none rounded-full border border-neutral-200 bg-white py-2 pl-9 pr-8 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
+                        class="w-auto min-w-[180px] appearance-none rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-8 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
                         onchange="applyFilters()"
                     >
                         <option value="" {{ empty($statusFilter) ? 'selected' : '' }}>Trạng thái: Tất cả</option>
@@ -207,9 +223,11 @@
         function applyFilters() {
             const session = document.getElementById('sessionFilter').value;
             const status = document.getElementById('statusFilter').value;
+            const phone = document.getElementById('phoneFilter').value;
             let url = new URL('{{ url("/admin/registrations") }}');
             if (session) url.searchParams.set('session_id', session);
             if (status) url.searchParams.set('status', status);
+            if (phone) url.searchParams.set('phone', phone);
             window.location.href = url.toString();
         }
     </script>

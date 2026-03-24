@@ -13,12 +13,12 @@
         @endphp
         <a 
             href="{{ url($item['url']) }}" 
-            class="flex items-center gap-3 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-xl group {{ $active ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface' }}"
+            class="flex items-center gap-3 px-3 py-2 text-sm font-medium transition-all duration-200 rounded-xl group {{ $active ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface' }} overflow-hidden whitespace-nowrap"
         >
             <span class="material-symbols-outlined text-xl {{ $active ? 'fill-1' : 'text-on-surface-variant/70 group-hover:text-on-surface' }}">
                 {{ $item['icon'] }}
             </span>
-            <span>{{ $item['label'] }}</span>
+            <span class="sidebar-text">{{ $item['label'] }}</span>
         </a>
     @endforeach
 </div>
