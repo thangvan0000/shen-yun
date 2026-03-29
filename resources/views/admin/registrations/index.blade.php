@@ -85,6 +85,7 @@
                         onchange="applyFilters()"
                     >
                         <option value="" {{ empty($statusFilter) ? 'selected' : '' }}>Trạng thái: Tất cả</option>
+                        <option value="pending" {{ $statusFilter === 'pending' ? 'selected' : '' }}>Trạng thái: Chờ xác nhận</option>
                         <option value="confirmed" {{ $statusFilter === 'confirmed' ? 'selected' : '' }}>Trạng thái: Đã xác nhận</option>
                         <option value="cancelled" {{ $statusFilter === 'cancelled' ? 'selected' : '' }}>Trạng thái: Đã hủy</option>
                     </select>
@@ -105,7 +106,6 @@
                         <th class="w-20 pl-6">Mã</th>
                         <th class="w-56">Người mời</th>
                         <th class="w-40">SĐT</th>
-                        <th class="w-72">Gmail</th>
                         <th class="w-36">Trình chiếu</th>
                         <th class="w-24">Khách</th>
                         <th class="w-24">NTL</th>
@@ -113,7 +113,7 @@
                         <th class="w-24">Trẻ em</th>
                         <th class="w-24">Tổng</th>
                         <th class="w-24">Trạng thái</th>
-                        <th class="w-20 pr-6">Thao tác</th>
+                        <th class="w-24 pr-6">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-neutral-200/70">
@@ -140,9 +140,6 @@
                                     <div class="text-neutral-900">—</div>
                                 @endif
                             </td>
-                            <td class="px-5 py-4">
-                                <div class="text-neutral-900">{{ $r->email }}</div>
-                            </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <div class="font-semibold text-neutral-900">{{ $r->eventSession->starts_at->format('d/m/Y H:i') }}</div>
                             </td>
@@ -152,25 +149,39 @@
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->child_count }}</td>
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->total_count }}</td>
                             <td class="px-5 py-4 text-center">
-                                @if($r->status === 'confirmed')
+                                @if($r->status === 'pending')
+                                    <span class="text-lg" title="Chờ xác nhận">⏳</span>
+                                @elseif($r->status === 'confirmed')
                                     <span class="text-lg" title="Đã xác nhận">✅</span>
                                 @else
                                     <span class="text-lg" title="Đã hủy">❌</span>
                                 @endif
                             </td>
                             <td class="pr-6 py-4 text-center">
+                                @if($r->status === 'pending')
+                                    <form action="{{ url('/admin/registrations/'.$r->id.'/confirm') }}" method="POST" class="inline">
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="p-2 hover:bg-green-200 rounded-lg transition-colors cursor-pointer hover:scale-110"
+                                            title="Xác nhận"
+                                        >
+                                            <span class="material-symbols-outlined text-lg" style="color: #16a34a;">check_circle</span>
+                                        </button>
+                                    </form>
+                                @endif
                                 <a
                                     href="{{ url('/admin/registrations/'.$r->id.'/edit') }}"
-                                    class="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors"
+                                    class="inline-flex p-2 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer hover:scale-110"
                                     title="Sửa"
                                 >
-                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                    <span class="material-symbols-outlined text-lg" style="color: #2563eb;">edit</span>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-4 py-12 text-center text-sm text-neutral-700/80" colspan="12">
+                            <td class="px-4 py-12 text-center text-sm text-neutral-700/80" colspan="11">
                                 Chưa có đăng ký.
                             </td>
                         </tr>

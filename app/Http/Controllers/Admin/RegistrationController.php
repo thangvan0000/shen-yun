@@ -33,7 +33,7 @@ class RegistrationController extends Controller
             ->orderByDesc('event_sessions.starts_at');
 
         $status = $request->query('status');
-        if ($status && in_array($status, ['confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
             $query->where('registrations.status', $status);
         }
 
@@ -85,7 +85,7 @@ class RegistrationController extends Controller
             ->orderByDesc('event_sessions.starts_at');
 
         $status = $request->query('status');
-        if ($status && in_array($status, ['confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
             $query->where('registrations.status', $status);
         }
 
@@ -145,7 +145,6 @@ class RegistrationController extends Controller
                     'Địa điểm',
                     'Trình chiếu',
                     'Họ tên',
-                    'Email',
                     'Phone',
                     'Khách',
                     'NTL',
@@ -166,7 +165,6 @@ class RegistrationController extends Controller
                             $r->eventSession?->venue?->name,
                             $r->eventSession?->starts_at?->format('d/m/Y H:i'),
                             $r->full_name,
-                            $r->email,
                             $r->phone,
                             $r->adult_count,
                             $r->ntl_count,
@@ -195,7 +193,7 @@ class RegistrationController extends Controller
             ->orderByDesc('event_sessions.starts_at');
 
         $status = $request->query('status');
-        if ($status && in_array($status, ['confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
             $query->where('registrations.status', $status);
         }
 
@@ -240,7 +238,6 @@ class RegistrationController extends Controller
             fwrite($out, "<col style=\"width:160px\">");  // Địa điểm
             fwrite($out, "<col style=\"width:140px\">");  // Trình chiếu
             fwrite($out, "<col style=\"width:180px\">");  // Họ tên
-            fwrite($out, "<col style=\"width:240px\">");  // Email
             fwrite($out, "<col style=\"width:140px\">");  // Phone
             fwrite($out, "<col style=\"width:80px\">");   // Khách
             fwrite($out, "<col style=\"width:80px\">");   // NTL
@@ -258,7 +255,6 @@ class RegistrationController extends Controller
                 'Địa điểm',
                 'Trình chiếu',
                 'Họ tên',
-                'Email',
                 'Phone',
                 'Khách',
                 'NTL',
@@ -283,7 +279,6 @@ class RegistrationController extends Controller
                         $r->eventSession?->venue?->name,
                         $r->eventSession?->starts_at?->format('d/m/Y H:i'),
                         $r->full_name,
-                        $r->email,
                         $r->phone,
                         $r->adult_count,
                         $r->ntl_count,
@@ -363,6 +358,20 @@ class RegistrationController extends Controller
         }
 
         return redirect()->to('/admin/registrations')->with('success', 'Cập nhật thành công.');
+    }
+
+    public function confirm(Registration $registration)
+    {
+        $wasPending = $registration->status === 'pending';
+        $sessionId = $registration->event_session_id;
+
+        $registration->update(['status' => 'confirmed']);
+
+        if ($wasPending) {
+            EventSession::recalculateReserved($sessionId);
+        }
+
+        return redirect()->to('/admin/registrations')->with('success', 'Đã xác nhận đăng ký.');
     }
 
     public function cancel(Registration $registration)
