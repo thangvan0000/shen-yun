@@ -39,7 +39,7 @@
                         placeholder="Tìm SĐT hoặc người mời"
                         value="{{ $searchFilter ?? '' }}"
                         class="w-full rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-4 text-sm text-neutral-700 outline-none hover:bg-neutral-50 focus:border-neutral-300"
-                        onkeypress="if(event.key === 'Enter') applyFilters()"
+                        oninput="applyFilters()"
                     >
                 </div>
 
@@ -242,7 +242,39 @@
             if (session) url.searchParams.set('session_id', session);
             if (status) url.searchParams.set('status', status);
             if (search) url.searchParams.set('search', search);
-            window.location.href = url.toString();
+            
+            fetch(url.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+                const newTable = newDoc.querySelector('table');
+                const newPagination = newDoc.querySelector('.mt-4');
+                
+                if (newTable) {
+                    document.querySelector('table').replaceWith(newTable);
+                }
+                if (newPagination) {
+                    document.querySelector('.mt-4').replaceWith(newPagination);
+                }
+                
+                document.querySelectorAll('details.phone-dropdown').forEach(details => {
+                    details.addEventListener('toggle', function() {
+                        if (this.open) {
+                            document.querySelectorAll('details.phone-dropdown').forEach(other => {
+                                if (other !== this) other.open = false;
+                            });
+                            startAutoCloseTimer(this);
+                        } else {
+                            clearAutoCloseTimer();
+                        }
+                    });
+                });
+            });
         }
     </script>
 @endsection
