@@ -42,21 +42,25 @@ class RegistrationController extends Controller
             $query->where('registrations.event_session_id', $sessionId);
         }
 
-        $phone = $request->query('phone');
-        if ($phone) {
-            $query->where(function($q) use ($phone) {
-                $q->where('registrations.phone', 'like', "%{$phone}%");
+        $search = $request->query('search');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                // Search in phone
+                $q->where('registrations.phone', 'like', "%{$search}%");
                 
                 // If starts with 0, also search for +84
-                if (str_starts_with($phone, '0')) {
-                    $alt = '+84' . substr($phone, 1);
+                if (str_starts_with($search, '0')) {
+                    $alt = '+84' . substr($search, 1);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 } 
                 // If starts with +84, also search for 0
-                elseif (str_starts_with($phone, '+84')) {
-                    $alt = '0' . substr($phone, 3);
+                elseif (str_starts_with($search, '+84')) {
+                    $alt = '0' . substr($search, 3);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
+                
+                // Search in full_name (inviter)
+                $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
 
@@ -71,7 +75,7 @@ class RegistrationController extends Controller
             'registrations' => $regs,
             'statusFilter' => $status,
             'sessionIdFilter' => $sessionId,
-            'phoneFilter' => $phone,
+            'searchFilter' => $search,
             'sessions' => $sessions,
         ]);
     }
@@ -94,18 +98,20 @@ class RegistrationController extends Controller
             $query->where('registrations.event_session_id', $sessionId);
         }
 
-        $phone = $request->query('phone');
-        if ($phone) {
-            $query->where(function($q) use ($phone) {
-                $q->where('registrations.phone', 'like', "%{$phone}%");
+        $search = $request->query('search');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('registrations.phone', 'like', "%{$search}%");
                 
-                if (str_starts_with($phone, '0')) {
-                    $alt = '+84' . substr($phone, 1);
+                if (str_starts_with($search, '0')) {
+                    $alt = '+84' . substr($search, 1);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
-                } elseif (str_starts_with($phone, '+84')) {
-                    $alt = '0' . substr($phone, 3);
+                } elseif (str_starts_with($search, '+84')) {
+                    $alt = '0' . substr($search, 3);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
+                
+                $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
 
@@ -202,18 +208,20 @@ class RegistrationController extends Controller
             $query->where('registrations.event_session_id', $sessionId);
         }
 
-        $phone = $request->query('phone');
-        if ($phone) {
-            $query->where(function($q) use ($phone) {
-                $q->where('registrations.phone', 'like', "%{$phone}%");
+        $search = $request->query('search');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('registrations.phone', 'like', "%{$search}%");
                 
-                if (str_starts_with($phone, '0')) {
-                    $alt = '+84' . substr($phone, 1);
+                if (str_starts_with($search, '0')) {
+                    $alt = '+84' . substr($search, 1);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
-                } elseif (str_starts_with($phone, '+84')) {
-                    $alt = '0' . substr($phone, 3);
+                } elseif (str_starts_with($search, '+84')) {
+                    $alt = '0' . substr($search, 3);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
+                
+                $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
 
