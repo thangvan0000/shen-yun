@@ -253,10 +253,6 @@
                                     href="{{ url('/login') }}"
                                     class="rounded-md px-3 py-1.5 hover:bg-black/5"
                                 >Đăng ký</a>
-                                <a
-                                    href="{{ url('/admin/login') }}"
-                                    class="rounded-md px-3 py-1.5 hover:bg-black/5"
-                                >Admin</a>
                             @endif
                         </nav>
                     </div>
