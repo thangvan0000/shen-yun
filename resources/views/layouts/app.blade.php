@@ -66,7 +66,7 @@
                     <div class="mt-auto pt-4 border-t border-outline-variant/30">
                          <form method="post" action="{{ url('/admin/logout') }}">
                             @csrf
-                            <button class="flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group overflow-hidden whitespace-nowrap">
+                            <button class="cursor-pointer flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group overflow-hidden whitespace-nowrap">
                                 <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">logout</span>
                                 <span class="sidebar-text">Đăng xuất</span>
                             </button>
@@ -253,10 +253,6 @@
                                     href="{{ url('/login') }}"
                                     class="rounded-md px-3 py-1.5 hover:bg-black/5"
                                 >Đăng ký</a>
-                                <a
-                                    href="{{ url('/admin/login') }}"
-                                    class="rounded-md px-3 py-1.5 hover:bg-black/5"
-                                >Admin</a>
                             @endif
                         </nav>
                     </div>
