@@ -338,11 +338,14 @@ class RegistrationController extends Controller
             'ntl_count' => ['required', 'integer', 'min:0', 'max:999'],
             'ntl_new_count' => ['required', 'integer', 'min:0', 'max:999'],
             'child_count' => ['required', 'integer', 'min:0', 'max:999'],
+            'attend_with_guest' => ['required', 'in:0,1'],
         ]);
 
         if (!empty($data['phone'])) {
             $data['phone'] = ltrim(preg_replace('/\D+/', '', (string)$data['phone']), '0');
         }
+
+        $data['attend_with_guest'] = (bool) $data['attend_with_guest'];
 
         $oldSessionId = $registration->event_session_id;
         $oldTotalCount = $registration->total_count;

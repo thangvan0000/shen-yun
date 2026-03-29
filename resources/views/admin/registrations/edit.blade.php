@@ -126,6 +126,34 @@
                 </div>
             </div>
 
+            <div class="pt-2">
+                <label class="text-sm font-medium">Đi cùng khách</label>
+                <div class="mt-3 flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <input
+                            id="attend_with_guest_yes"
+                            name="attend_with_guest"
+                            type="radio"
+                            value="1"
+                            {{ old('attend_with_guest', $registration->attend_with_guest) == 1 ? 'checked' : '' }}
+                            class="h-4 w-4 border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                        />
+                        <label for="attend_with_guest_yes" class="text-sm">Có</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input
+                            id="attend_with_guest_no"
+                            name="attend_with_guest"
+                            type="radio"
+                            value="0"
+                            {{ old('attend_with_guest', $registration->attend_with_guest) == 0 ? 'checked' : '' }}
+                            class="h-4 w-4 border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                        />
+                        <label for="attend_with_guest_no" class="text-sm">Không</label>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex items-center gap-4 pt-2">
                 <button class="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800">
                     Lưu thay đổi
