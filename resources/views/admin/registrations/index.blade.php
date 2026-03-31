@@ -148,46 +148,19 @@
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->child_count }}</td>
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->total_count }}</td>
                             <td class="px-4 py-4">
-                                <div class="status-dropdown-wrap relative inline-block">
-                                    @php
-                                        $statusCfg = match($r->status) {
-                                            'confirmed' => ['bg' => 'bg-green-100',  'text' => 'text-green-700',  'dot' => 'bg-green-500',  'label' => 'Đã xác nhận'],
-                                            'cancelled' => ['bg' => 'bg-red-100',    'text' => 'text-red-600',    'dot' => 'bg-red-500',    'label' => 'Đã hủy'],
-                                            default     => ['bg' => 'bg-amber-100',  'text' => 'text-amber-700',  'dot' => 'bg-amber-400',  'label' => 'Chờ xác nhận'],
-                                        };
-                                    @endphp
-                                    <button type="button"
-                                        class="status-badge-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 {{ $statusCfg['bg'] }} {{ $statusCfg['text'] }}"
-                                    >
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $statusCfg['dot'] }}"></span>
-                                        {{ $statusCfg['label'] }}
-                                        <span class="material-symbols-outlined text-[13px] ml-0.5">expand_more</span>
-                                    </button>
-                                    <div class="status-menu hidden absolute left-0 top-full mt-1 z-20 w-44 rounded-xl border border-neutral-200 bg-white shadow-lg overflow-hidden py-1">
-                                        <form action="{{ url('/admin/registrations/'.$r->id.'/status') }}" method="POST">
-                                            @csrf
-                                            <button name="status" value="pending" type="submit"
-                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-amber-50 transition-colors {{ $r->status === 'pending' ? 'bg-amber-50' : '' }}">
-                                                <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
-                                                <span class="font-medium text-amber-700">Chờ xác nhận</span>
-                                                @if($r->status === 'pending') <span class="material-symbols-outlined text-[14px] ml-auto text-amber-600">check</span> @endif
-                                            </button>
-                                            <button name="status" value="confirmed" type="submit"
-                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-green-50 transition-colors {{ $r->status === 'confirmed' ? 'bg-green-50' : '' }}">
-                                                <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
-                                                <span class="font-medium text-green-700">Đã xác nhận</span>
-                                                @if($r->status === 'confirmed') <span class="material-symbols-outlined text-[14px] ml-auto text-green-600">check</span> @endif
-                                            </button>
-                                            <div class="my-1 border-t border-neutral-100"></div>
-                                            <button name="status" value="cancelled" type="submit"
-                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-red-50 transition-colors {{ $r->status === 'cancelled' ? 'bg-red-50' : '' }}">
-                                                <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
-                                                <span class="font-medium text-red-600">Đã hủy</span>
-                                                @if($r->status === 'cancelled') <span class="material-symbols-outlined text-[14px] ml-auto text-red-500">check</span> @endif
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                @if($r->status === 'pending')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>Chờ xác nhận
+                                    </span>
+                                @elseif($r->status === 'confirmed')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Đã xác nhận
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-100 text-red-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>Đã hủy
+                                    </span>
+                                @endif
                             </td>
                             <td class="pr-6 py-4 text-center">
                                 <a
@@ -308,18 +281,5 @@
             display: flex !important;
         }
     </style>
-    <script>
-        document.addEventListener('click', function(e) {
-            const btn = e.target.closest('.status-badge-btn');
-            if (btn) {
-                e.stopPropagation();
-                const menu = btn.closest('.status-dropdown-wrap').querySelector('.status-menu');
-                document.querySelectorAll('.status-menu').forEach(m => { if (m !== menu) m.classList.add('hidden'); });
-                menu.classList.toggle('hidden');
-                return;
-            }
-            document.querySelectorAll('.status-menu').forEach(m => m.classList.add('hidden'));
-        });
-    </script>
 @endsection
 
