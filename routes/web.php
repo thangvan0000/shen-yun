@@ -55,6 +55,8 @@ Route::middleware(['admin.authed'])->group(function () {
     Route::get('/admin/registrations/{registration}/edit', [RegistrationController::class, 'edit']);
     Route::put('/admin/registrations/{registration}', [RegistrationController::class, 'update']);
     Route::post('/admin/registrations/{registration}/cancel', [RegistrationController::class, 'cancel']);
+    Route::post('/admin/registrations/{registration}/pending', [RegistrationController::class, 'markPending']);
+    Route::post('/admin/registrations/{registration}/status', [RegistrationController::class, 'updateStatus']);
     Route::post('/admin/registrations/{registration}/confirm', [RegistrationController::class, 'confirm']);
     Route::delete('/admin/registrations/{registration}', [RegistrationController::class, 'destroy']);
 

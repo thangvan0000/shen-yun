@@ -7,7 +7,7 @@
         </div>
     @endif
 
-    <div class="register-list rounded-3xl border border-white/25 bg-white/65 shadow-[0_16px_60px_rgba(0,0,0,0.18)] backdrop-blur-md">
+    <div class="rounded-3xl border border-white/25 bg-white/65 shadow-[0_16px_60px_rgba(0,0,0,0.18)] backdrop-blur-md">
         <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-4">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
@@ -97,9 +97,9 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full w-full text-sm">
                 <thead class="bg-white/70 text-left text-xs font-semibold text-neutral-700">
-                    <tr class="[&>th]:px-5 [&>th]:py-4 border-neutral-200/70 border-b">
+                    <tr class="[&>th]:px-5 [&>th]:py-4">
                         <th class="w-20 pl-6">Mã</th>
-                        <th class="w-56 bg-white sticky left-0 z-10 sticky-col">Người mời</th>
+                        <th class="w-56">Người mời</th>
                         <th class="w-40">SĐT</th>
                         <th class="w-36">Trình chiếu</th>
                         <th class="w-24">Khách</th>
@@ -113,24 +113,28 @@
                 </thead>
                 <tbody class="divide-y divide-neutral-200/70">
                     @forelse ($registrations as $r)
-                        <tr class="hover:bg-neutral-100 register-list__tr group">
+                        <tr class="hover:bg-black/3">
                             <td class="pl-6 py-4 font-mono text-xs text-neutral-700">#{{ $r->id }}</td>
-                            <td class="px-5 py-4 sticky left-0 z-10 bg-white sticky-col">
+                            <td class="px-5 py-4">
                                 <a href="{{ url('/admin/registrations/'.$r->id.'/edit') }}" class="block min-h-[44px] min-w-[44px] flex items-center font-semibold text-neutral-900 hover:underline">
                                     {{ $r->full_name }}
                                 </a>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 @if($r->phone)
-                                    <details class="phone-dropdown relative">
-                                        <summary class="list-none cursor-pointer text-neutral-900 hover:underline">
-                                            {{ $r->phone }}
-                                        </summary>
-                                        <div class="absolute z-10 mt-1 w-24 rounded-lg border border-neutral-200 bg-white py-1 shadow-lg">
-                                            <a href="tel:{{ $r->phone }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Call</a>
-                                            <a href="https://zalo.me/{{ $r->phone }}" target="_blank" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Zalo</a>
+                                    <div class="phone-hover-group relative inline-block">
+                                        <span class="cursor-default text-neutral-900">{{ $r->phone }}</span>
+                                        <div class="phone-actions absolute left-0 top-full z-10 mt-1 hidden flex-col rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-lg w-32">
+                                            <a href="tel:{{ $r->phone }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-700 hover:bg-emerald-50 transition-colors">
+                                                <span class="material-symbols-outlined text-[18px] text-emerald-600">call</span>
+                                                <span class="font-medium">Gọi điện</span>
+                                            </a>
+                                            <a href="https://zalo.me/{{ $r->phone }}" target="_blank" class="flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-700 hover:bg-blue-50 transition-colors">
+                                                <img src="https://page.widget.zalo.me/static/images/2.0/Logo.svg" alt="Zalo" class="w-[18px] h-[18px]">
+                                                <span class="font-medium">Zalo</span>
+                                            </a>
                                         </div>
-                                    </details>
+                                    </div>
                                 @else
                                     <div class="text-neutral-900">—</div>
                                 @endif
@@ -143,28 +147,49 @@
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->ntl_new_count }}</td>
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->child_count }}</td>
                             <td class="px-5 py-4 font-semibold text-neutral-900 text-center">{{ $r->total_count }}</td>
-                            <td class="px-5 py-4 text-center">
-                                @if($r->status === 'pending')
-                                    <span class="text-lg" title="Chờ xác nhận">⏳</span>
-                                @elseif($r->status === 'confirmed')
-                                    <span class="text-lg" title="Đã xác nhận">✅</span>
-                                @else
-                                    <span class="text-lg" title="Đã hủy">❌</span>
-                                @endif
+                            <td class="px-4 py-4">
+                                <div class="status-dropdown-wrap relative inline-block">
+                                    @php
+                                        $statusCfg = match($r->status) {
+                                            'confirmed' => ['bg' => 'bg-green-100',  'text' => 'text-green-700',  'dot' => 'bg-green-500',  'label' => 'Đã xác nhận'],
+                                            'cancelled' => ['bg' => 'bg-red-100',    'text' => 'text-red-600',    'dot' => 'bg-red-500',    'label' => 'Đã hủy'],
+                                            default     => ['bg' => 'bg-amber-100',  'text' => 'text-amber-700',  'dot' => 'bg-amber-400',  'label' => 'Chờ xác nhận'],
+                                        };
+                                    @endphp
+                                    <button type="button"
+                                        class="status-badge-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80 {{ $statusCfg['bg'] }} {{ $statusCfg['text'] }}"
+                                    >
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $statusCfg['dot'] }}"></span>
+                                        {{ $statusCfg['label'] }}
+                                        <span class="material-symbols-outlined text-[13px] ml-0.5">expand_more</span>
+                                    </button>
+                                    <div class="status-menu hidden absolute left-0 top-full mt-1 z-20 w-44 rounded-xl border border-neutral-200 bg-white shadow-lg overflow-hidden py-1">
+                                        <form action="{{ url('/admin/registrations/'.$r->id.'/status') }}" method="POST">
+                                            @csrf
+                                            <button name="status" value="pending" type="submit"
+                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-amber-50 transition-colors {{ $r->status === 'pending' ? 'bg-amber-50' : '' }}">
+                                                <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                                                <span class="font-medium text-amber-700">Chờ xác nhận</span>
+                                                @if($r->status === 'pending') <span class="material-symbols-outlined text-[14px] ml-auto text-amber-600">check</span> @endif
+                                            </button>
+                                            <button name="status" value="confirmed" type="submit"
+                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-green-50 transition-colors {{ $r->status === 'confirmed' ? 'bg-green-50' : '' }}">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+                                                <span class="font-medium text-green-700">Đã xác nhận</span>
+                                                @if($r->status === 'confirmed') <span class="material-symbols-outlined text-[14px] ml-auto text-green-600">check</span> @endif
+                                            </button>
+                                            <div class="my-1 border-t border-neutral-100"></div>
+                                            <button name="status" value="cancelled" type="submit"
+                                                class="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-red-50 transition-colors {{ $r->status === 'cancelled' ? 'bg-red-50' : '' }}">
+                                                <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
+                                                <span class="font-medium text-red-600">Đã hủy</span>
+                                                @if($r->status === 'cancelled') <span class="material-symbols-outlined text-[14px] ml-auto text-red-500">check</span> @endif
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
                             </td>
                             <td class="pr-6 py-4 text-center">
-                                @if($r->status === 'pending')
-                                    <form action="{{ url('/admin/registrations/'.$r->id.'/confirm') }}" method="POST" class="inline">
-                                        @csrf
-                                        <button
-                                            type="submit"
-                                            class="p-2 hover:bg-green-200 rounded-lg transition-colors cursor-pointer hover:scale-110"
-                                            title="Xác nhận"
-                                        >
-                                            <span class="material-symbols-outlined text-lg" style="color: #16a34a;">check_circle</span>
-                                        </button>
-                                    </form>
-                                @endif
                                 <a
                                     href="{{ url('/admin/registrations/'.$r->id.'/edit') }}"
                                     class="inline-flex p-2 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer hover:scale-110"
@@ -276,34 +301,25 @@
                 });
             });
         }
-
-        // Sticky column shadow on scroll
-        const scrollWrapper = document.querySelector('.overflow-x-auto');
-        if (scrollWrapper) {
-            scrollWrapper.addEventListener('scroll', () => {
-                const isScrolled = scrollWrapper.scrollLeft > 0;
-                document.querySelectorAll('.sticky-col').forEach(el => {
-                    el.classList.toggle('is-stuck', isScrolled);
-                });
-            });
-        }
     </script>
-
     <style>
-        .sticky-col.is-stuck::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: -8px;
-            width: 8px;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.08), transparent);
-            pointer-events: none;
-        }
-
-        tr:hover .sticky-col.is-stuck {
-            background-color: #f5f5f5 !important;
+        .phone-hover-group:hover .phone-actions,
+        .phone-hover-group .phone-actions:hover {
+            display: flex !important;
         }
     </style>
+    <script>
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.status-badge-btn');
+            if (btn) {
+                e.stopPropagation();
+                const menu = btn.closest('.status-dropdown-wrap').querySelector('.status-menu');
+                document.querySelectorAll('.status-menu').forEach(m => { if (m !== menu) m.classList.add('hidden'); });
+                menu.classList.toggle('hidden');
+                return;
+            }
+            document.querySelectorAll('.status-menu').forEach(m => m.classList.add('hidden'));
+        });
+    </script>
 @endsection
 

@@ -373,42 +373,55 @@ class RegistrationController extends Controller
 
     public function confirm(Registration $registration)
     {
-        $wasPending = $registration->status === 'pending';
         $sessionId = $registration->event_session_id;
-
         $registration->update(['status' => 'confirmed']);
-
-        if ($wasPending) {
-            EventSession::recalculateReserved($sessionId);
-        }
+        EventSession::recalculateReserved($sessionId);
 
         return redirect()->to('/admin/registrations')->with('success', 'Đã xác nhận đăng ký.');
     }
 
-    public function cancel(Registration $registration)
+    public function updateStatus(Registration $registration, \Illuminate\Http\Request $request)
     {
-        $wasConfirmed = $registration->status === 'confirmed';
+        $new = $request->input('status');
+        if (!in_array($new, ['pending', 'confirmed', 'cancelled'])) {
+            return back();
+        }
+
+        $old = $registration->status;
         $sessionId = $registration->event_session_id;
 
-        $registration->update(['status' => 'cancelled']);
+        $registration->update(['status' => $new]);
 
-        if ($wasConfirmed) {
+        if ($old !== $new) {
             EventSession::recalculateReserved($sessionId);
         }
+
+        return back()->with('success', 'Đã cập nhật trạng thái.');
+    }
+
+    public function markPending(Registration $registration)
+    {
+        $sessionId = $registration->event_session_id;
+        $registration->update(['status' => 'pending']);
+        EventSession::recalculateReserved($sessionId);
+
+        return redirect()->to('/admin/registrations')->with('success', 'Đã chuyển về chờ xác nhận.');
+    }
+
+    public function cancel(Registration $registration)
+    {
+        $sessionId = $registration->event_session_id;
+        $registration->update(['status' => 'cancelled']);
+        EventSession::recalculateReserved($sessionId);
 
         return redirect()->to('/admin/registrations')->with('success', 'Đã hủy đăng ký.');
     }
 
     public function destroy(Registration $registration)
     {
-        $wasConfirmed = $registration->status === 'confirmed';
         $sessionId = $registration->event_session_id;
-
         $registration->delete();
-
-        if ($wasConfirmed) {
-            EventSession::recalculateReserved($sessionId);
-        }
+        EventSession::recalculateReserved($sessionId);
 
         return redirect()->to('/admin/registrations')->with('success', 'Đã xóa đăng ký.');
     }

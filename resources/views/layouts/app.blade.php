@@ -7,32 +7,12 @@
 
         <title>{{ $title ?? config('app.name', 'Phong trà') }}</title>
 
-        <link rel="icon" id="favicon" type="image/webp" href="{{ asset('shen-yun.webp') }}">
-
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script>
-            (function() {
-                const img = new Image();
-                img.src = '{{ asset('shen-yun.webp') }}';
-                img.onload = function() {
-                    const size = 64;
-                    const canvas = document.createElement('canvas');
-                    canvas.width = canvas.height = size;
-                    const ctx = canvas.getContext('2d');
-                    ctx.beginPath();
-                    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-                    ctx.closePath();
-                    ctx.clip();
-                    ctx.drawImage(img, 0, 0, size, size);
-                    document.getElementById('favicon').href = canvas.toDataURL('image/png');
-                };
-            })();
-        </script>
     </head>
     @php
         $isRegisterFlow = request()->is('register*') || request()->is('login');
@@ -44,11 +24,8 @@
         <body class="rsvp-shell {{ request()->is('login') ? 'rsvp-access' : '' }}">
             <div class="rsvp-shell">
                 <div class="rsvp-top">
-                    <h2 class="rsvp-title">{{ $appTitle }}</h2>
-                    <p class="rsvp-subtitle">
-                        Thưởng thức nghệ thuật<br class="sm:hidden">
-                        âm nhạc và vũ đạo thuần chính
-                    </p>
+                    <div class="rsvp-title">{{ $appTitle }}</div>
+                    <div class="rsvp-subtitle">Trải nghiệm hành trình<br class="sm:hidden"> âm nhạc &amp; vũ đạo thuần chính</div>
                 </div>
 
                 <main class="pb-12">
@@ -58,15 +35,6 @@
 
                     </div>
                 </main>
-
-                <footer class="text-center text-xs text-neutral-100/30">
-                    <div class="pt-4">
-                        <p class="flex items-center justify-center mb-2">
-                            <span class="material-symbols-outlined text-base text-neutral-100/20">music_note</span>
-                        </p>
-                    © 2026 Phòng Trà VinHomes Q9
-                </div>
-                </footer>
             </div>
             <x-floating-contact-widget />
         </body>
@@ -96,7 +64,13 @@
                     </nav>
 
                     <div class="mt-auto pt-4 border-t border-outline-variant/30">
-                        <p class="sidebar-text text-center text-xs text-on-surface-variant/80">© 2026 Phòng Trà VinHomes Q9</p>
+                         <form method="post" action="{{ url('/admin/logout') }}">
+                            @csrf
+                            <button class="cursor-pointer flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group overflow-hidden whitespace-nowrap">
+                                <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">logout</span>
+                                <span class="sidebar-text">Đăng xuất</span>
+                            </button>
+                        </form>
                     </div>
                 </aside>
 
@@ -166,7 +140,7 @@
                         }
                     </style>
 
-                    <main class="p-2 sm:p-4 lg:p-5">
+                    <main class="flex-1 p-5">
                         @if (session('status'))
                             <div class="mb-6 rounded-xl border border-emerald-200/60 bg-emerald-50/90 px-4 py-3 text-emerald-900 shadow-sm">
                                 {{ session('status') }}
@@ -188,7 +162,9 @@
                         @yield('content')
                     </main>
 
-
+                    <footer class="px-8 py-6 text-xs text-on-surface-variant/50 border-t border-outline-variant/10 bg-slate-50/50">
+                        © {{ date('Y') }} {{ $appTitle }} • Admin Dashboard v2.0
+                    </footer>
                 </div>
             </div>
 
@@ -294,8 +270,8 @@
                 </main>
 
                 <footer class="border-t border-white/20 bg-white/60 backdrop-blur-md">
-                    <div class="mx-auto max-w-6xl px-4 py-5 text-xs text-neutral-600 text-center">
-                        © 2026 Phòng Trà VinHomes Q9
+                    <div class="mx-auto max-w-6xl px-4 py-5 text-xs text-neutral-600">
+                        © {{ date('Y') }} {{ $appTitle }}
                     </div>
                 </footer>
             </div>

@@ -166,7 +166,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="flex items-center gap-2">
+                                                <div class="flex items-center gap-2 flex-nowrap whitespace-nowrap">
                                                     <span class="text-sm font-medium">{{ $s->capacity_reserved }} / {{ $s->capacity_total }}</span>
                                                     <span class="text-xs px-2 py-0.5 bg-surface-container rounded-xl text-on-surface-variant">Còn {{ $remaining }}</span>
                                                 </div>
