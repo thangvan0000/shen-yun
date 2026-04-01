@@ -444,6 +444,13 @@
     animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.toast-notification.toast-success,
+.toast-notification.toast-success {
+    border-color: rgba(52, 211, 153, 0.3) !important;
+    background-color: rgba(209, 250, 229, 0.95) !important;
+    color: #065f46 !important;
+}
+
 .toast-notification.hide {
     @apply opacity-0 translate-y-2 scale-95;
 }
@@ -466,4 +473,12 @@ input.rsvp-input.is-invalid,
 select.rsvp-select.is-invalid,
 input.rsvp-counter-input.is-invalid {
     border-color: #ba1a1a !important;
+}
+
+
+/* Invalid Fields - Outside @layer for higher priority + increased specificity */
+form {
+    .is-invalid {
+        border-color: #dc2626 !important;
+    }
 }

@@ -167,23 +167,6 @@
                     </style>
 
                     <main class="p-2 sm:p-4 lg:p-5">
-                        @if (session('status'))
-                            <div class="mb-6 rounded-xl border border-emerald-200/60 bg-emerald-50/90 px-4 py-3 text-emerald-900 shadow-sm">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-
-                        @if ($errors->any())
-                            <div class="mb-6 rounded-xl border border-rose-200/70 bg-rose-50/90 px-4 py-3 text-rose-900 shadow-sm">
-                                <div class="font-bold">Có lỗi xảy ra</div>
-                                <ul class="mt-2 list-disc pl-5 text-sm">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
                         {{ $slot ?? '' }}
                         @yield('content')
                     </main>
@@ -304,29 +287,37 @@
         <div id="toast-container" class="toast-container"></div>
 
         <script>
-            function showToast(messages) {
+            function showToast(messages, type = 'error') {
                 const container = document.getElementById('toast-container');
                 if (!container) return;
 
                 if (!Array.isArray(messages)) messages = [messages];
-                
+
                 messages.forEach(msg => {
+                    // Skip if same message is already visible
+                    const existing = [...container.querySelectorAll('.toast-notification')];
+                    if (existing.some(t => t.querySelector('.flex-1')?.textContent.trim() === msg)) return;
+
+                    const isSuccess = type === 'success';
                     const toast = document.createElement('div');
-                    toast.className = 'toast-notification';
+                    toast.className = isSuccess
+                        ? 'toast-notification toast-success'
+                        : 'toast-notification';
+                    if (isSuccess) {
+                        toast.style.cssText = 'border-color: rgba(52,211,153,0.3) !important; background-color: rgba(209,250,229,0.95) !important; color: #065f46 !important;';
+                    }
                     toast.innerHTML = `
-                        <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5 opacity-90">error</span>
+                        <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5 opacity-90">${isSuccess ? 'check_circle' : 'error'}</span>
                         <div class="flex-1 leading-relaxed">${msg}</div>
                     `;
-                    
+
                     container.appendChild(toast);
 
-                    // Auto-remove after 5 seconds
                     setTimeout(() => {
                         toast.classList.add('hide');
                         setTimeout(() => toast.remove(), 400);
                     }, 5000);
-                    
-                    // Allow manual click to dismiss
+
                     toast.onclick = () => {
                         toast.classList.add('hide');
                         setTimeout(() => toast.remove(), 400);
@@ -335,32 +326,36 @@
             }
 
             document.addEventListener('DOMContentLoaded', function() {
-                // Show server-side errors
+                // Success flash
+                @if(session('success'))
+                    showToast({{ Js::from(session('success')) }}, 'success');
+                @endif
+                @if(session('status'))
+                    showToast({{ Js::from(session('status')) }}, 'success');
+                @endif
+
+                // Error flash
                 const serverErrors = @json($errors->all());
                 if (serverErrors && serverErrors.length > 0) {
-                    showToast(serverErrors);
-                    
-                    // Also try to find fields with errors and highlight them                    
+                    showToast(serverErrors, 'error');
+
                     const errorFields = @json($errors->keys());
                     errorFields.forEach(field => {
                         const input = document.getElementsByName(field)[0] || document.getElementById(field);
-                        // Skip inputs on step 3 (they handle errors differently)
                         if (input && !input.classList.contains('rsvp-counter-input')) {
                             input.classList.add('is-invalid');
                         }
                     });
                 }
 
-                // Intercept form submissions for client-side feedback
                 document.querySelectorAll('form').forEach(form => {
                     if (form.hasAttribute('formnovalidate')) return;
-                    
+
                     form.addEventListener('submit', function(e) {
                         if (!form.checkValidity()) {
                             e.preventDefault();
                             showToast('Vui lòng kiểm tra lại các thông tin bắt buộc.');
-                            
-                            // Highlight invalid fields
+
                             form.querySelectorAll(':invalid').forEach(field => {
                                 field.classList.add('is-invalid');
                                 field.addEventListener('input', function() {
