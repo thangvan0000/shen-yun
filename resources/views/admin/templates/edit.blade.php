@@ -6,6 +6,7 @@
             <div>
                 <h1 class="text-2xl font-semibold tracking-tight">Sửa mẫu lịch chiếu</h1>
                 <p class="mt-1 text-sm text-neutral-600">Cập nhật mẫu lịch chiếu cho {{ $template->venue->name }}.</p>
+                <p class="mt-0.5 text-xs text-neutral-400">Ngày tạo: {{ $template->created_at->format('d/m/Y H:i') }}</p>
             </div>
             <a href="{{ url('/admin/sessions') }}" class="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">
                 Quay lại
@@ -13,17 +14,6 @@
         </div>
 
         <div class="mt-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-            @if ($errors->any())
-                <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
-                    <p class="text-sm font-medium text-red-800">Có lỗi xảy ra:</p>
-                    <ul class="mt-2 list-disc pl-5 text-sm text-red-700">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <form method="post" action="{{ url('/admin/templates/' . $template->id) }}" id="templateForm">
                 @csrf
                 @method('PUT')

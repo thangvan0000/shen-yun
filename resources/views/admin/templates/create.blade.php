@@ -13,17 +13,6 @@
         </div>
 
         <div class="mt-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-            @if ($errors->any())
-                <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4">
-                    <p class="text-sm font-medium text-red-800">Có lỗi xảy ra:</p>
-                    <ul class="mt-2 list-disc pl-5 text-sm text-red-700">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <form method="post" action="{{ url('/admin/templates') }}" id="templateForm">
                 @csrf
                 @include('admin.templates.form')

@@ -6,6 +6,7 @@
             <div>
                 <h1 class="text-2xl font-semibold tracking-tight">Sửa địa điểm</h1>
                 <p class="mt-1 text-sm text-neutral-600">{{ $venue->name }}</p>
+                <p class="mt-0.5 text-xs text-neutral-400">Ngày tạo: {{ $venue->created_at->format('d/m/Y H:i') }}</p>
             </div>
             <a href="{{ url('/admin/venues') }}" class="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">
                 Quay lại
@@ -13,7 +14,7 @@
         </div>
 
         <div class="mt-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-            <form method="post" action="{{ url('/admin/venues/'.$venue->id) }}">
+            <form method="post" action="{{ url('/admin/venues/'.$venue->id) }}" novalidate>
                 @csrf
                 @method('PUT')
 

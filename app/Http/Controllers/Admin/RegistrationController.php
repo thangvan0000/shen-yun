@@ -335,20 +335,34 @@ class RegistrationController extends Controller
     public function update(Request $request, Registration $registration)
     {
         $data = $request->validate([
-            'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'regex:/^[0-9]{9,11}$/'],
+            'full_name'        => ['required', 'string', 'max:255'],
+            'email'            => ['nullable', 'email', 'max:255'],
+            'phone_country'    => ['nullable', 'string', 'max:8'],
+            'phone_number'     => ['nullable', 'string', 'regex:/^[0-9]{9,11}$/'],
             'event_session_id' => ['required', 'exists:event_sessions,id'],
-            'adult_count' => ['required', 'integer', 'min:0', 'max:999'],
-            'ntl_count' => ['required', 'integer', 'min:0', 'max:999'],
-            'ntl_new_count' => ['required', 'integer', 'min:0', 'max:999'],
-            'child_count' => ['required', 'integer', 'min:0', 'max:999'],
-            'attend_with_guest' => ['required', 'in:0,1'],
+            'adult_count'      => ['required', 'integer', 'min:0', 'max:999'],
+            'ntl_count'        => ['required', 'integer', 'min:0', 'max:999'],
+            'ntl_new_count'    => ['required', 'integer', 'min:0', 'max:999'],
+            'child_count'      => ['required', 'integer', 'min:0', 'max:999'],
+            'attend_with_guest'=> ['required', 'in:0,1'],
+        ], [
+            'phone_number.regex' => 'Số điện thoại không hợp lệ.',
         ]);
 
-        if (!empty($data['phone'])) {
-            $data['phone'] = ltrim(preg_replace('/\D+/', '', (string)$data['phone']), '0');
+        // Assemble phone from country + number
+        $phone = null;
+        $country = trim((string) ($data['phone_country'] ?? ''));
+        $number  = preg_replace('/\D+/', '', (string) ($data['phone_number'] ?? ''));
+        $number  = ltrim($number, '0');
+        if ($number !== '') {
+            $country = $country !== '' ? $country : '+84';
+            if (!str_starts_with($country, '+')) {
+                $country = '+' . $country;
+            }
+            $phone = $country . $number;
         }
+        $data['phone'] = $phone;
+        unset($data['phone_country'], $data['phone_number']);
 
         $data['attend_with_guest'] = (bool) $data['attend_with_guest'];
 

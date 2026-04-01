@@ -4,7 +4,7 @@
 
 <div class="space-y-4">
     <div>
-        <label class="text-sm font-medium" for="venue_id">Địa điểm</label>
+        <label class="text-sm font-medium" for="venue_id">Địa điểm <span class="text-red-500">*</span></label>
         <select
             id="venue_id"
             name="venue_id"
@@ -21,7 +21,7 @@
     </div>
 
     <div>
-        <label class="text-sm font-medium" for="starts_at">Bắt đầu (datetime)</label>
+        <label class="text-sm font-medium" for="starts_at">Bắt đầu (datetime) <span class="text-red-500">*</span></label>
         <input
             id="starts_at"
             name="starts_at"
@@ -34,7 +34,7 @@
 
     <div class="grid gap-4 sm:grid-cols-2">
         <div>
-            <label class="text-sm font-medium" for="capacity_total">Số lượng ghế</label>
+            <label class="text-sm font-medium" for="capacity_total">Số lượng ghế <span class="text-red-500">*</span></label>
             <input
                 id="capacity_total"
                 name="capacity_total"
@@ -47,7 +47,7 @@
         </div>
 
         <div>
-            <label class="text-sm font-medium" for="registration_status">Trạng thái</label>
+            <label class="text-sm font-medium" for="registration_status">Trạng thái <span class="text-red-500">*</span></label>
             <select
                 id="registration_status"
                 name="registration_status"

@@ -1,11 +1,6 @@
 @extends('layouts.app', ['title' => 'Admin – Đăng ký'])
 
 @section('content')
-    @if(session('success'))
-        <div class="mb-4 rounded-xl border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <div class="register-list rounded-3xl border border-white/25 bg-white/65 shadow-[0_16px_60px_rgba(0,0,0,0.18)] backdrop-blur-md">
         <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-4">
