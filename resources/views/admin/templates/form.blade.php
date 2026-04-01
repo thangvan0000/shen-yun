@@ -5,7 +5,7 @@
 
 <div class="space-y-6">
     <div>
-        <label class="text-sm font-medium" for="venue_id">Địa điểm</label>
+        <label class="text-sm font-medium" for="venue_id">Địa điểm <span class="text-red-500">*</span></label>
         <select
             id="venue_id"
             name="venue_id"
@@ -30,7 +30,7 @@
 
     <div>
         <div class="flex items-center justify-between">
-            <label class="text-sm font-medium">Khung giờ chiếu</label>
+            <label class="text-sm font-medium">Khung giờ chiếu <span class="text-red-500">*</span></label>
             <button type="button" id="addSlot" class="rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50">
                 + Thêm khung giờ
             </button>
