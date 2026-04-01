@@ -70,7 +70,7 @@ class RegistrationController extends Controller
                 } elseif (str_starts_with($search, '+84')) {
                     $q->orWhere('registrations.phone', 'like', '%0' . substr($search, 3) . '%');
                 }
-                $q->orWhere('registrations.full_name', 'like', "%{$search}%");
+                $q->orWhereRaw('LOWER(registrations.full_name) LIKE ?', ['%' . mb_strtolower($search) . '%']);
             });
         }
 
