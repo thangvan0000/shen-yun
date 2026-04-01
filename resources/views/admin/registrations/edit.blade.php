@@ -6,6 +6,17 @@
         <div class="mb-6">
             <a href="{{ $backUrl }}" class="text-sm text-neutral-700 hover:underline">← Quay lại danh sách</a>
             <h1 class="mt-2 text-2xl font-semibold tracking-tight">Chỉnh sửa đăng ký #{{ $registration->id }}</h1>
+            <p class="mt-1 text-sm text-neutral-500">Ngày đăng ký: {{ $registration->created_at->format('d/m/Y H:i') }}</p>
+            <p class="mt-1 text-sm">
+                Trạng thái:
+                @if($registration->status === 'pending')
+                    <span class="font-semibold text-amber-600">⏳ Chờ xác nhận</span>
+                @elseif($registration->status === 'confirmed')
+                    <span class="font-semibold text-green-800">✅ Đã xác nhận</span>
+                @else
+                    <span class="font-semibold text-red-600">❌ Đã hủy</span>
+                @endif
+            </p>
         </div>
 
         @if($registration->status === 'cancelled')
