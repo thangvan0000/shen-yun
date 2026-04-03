@@ -10,6 +10,8 @@ use App\Mail\RegistrationConfirmed;
 use App\Services\SessionGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
@@ -340,6 +342,25 @@ class RegistrationWizardController extends Controller
         $registration->load('eventSession.venue');
         if ($registration->email) {
             Mail::to($registration->email)->send(new RegistrationConfirmed($registration));
+        }
+
+        // Send push notification to admins via OneSignal
+        try {
+            Http::withHeaders([
+                'Authorization' => 'Basic ' . config('services.onesignal.rest_api_key'),
+                'Content-Type' => 'application/json',
+            ])->post('https://onesignal.com/api/v1/notifications', [
+                'app_id' => config('services.onesignal.app_id'),
+                'included_segments' => ['Subscribed Users'],
+                'contents' => [
+                    'en' => "New registration: {$registration->full_name} with {$registration->total_count} guests",
+                ],
+                'headings' => [
+                    'en' => 'New Registration',
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('OneSignal push notification failed: ' . $e->getMessage());
         }
 
         Session::forget(self::DRAFT_KEY);
