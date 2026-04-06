@@ -47,7 +47,7 @@ class NewEventRegistration extends Notification
         $attendWith = $this->registration->attend_with_guest ? ' (đi cùng)' : '';
 
         $message = new Message();
-        $message->topic('tiec_tra_shenyun_alerts');
+        $message->topic(config('ntfy-notification-channel.topic', 'tiec_tra_shenyun_alerts'));
         $message->title('Đăng ký mới!');
         $message->markdownBody(
             "**{$this->registration->full_name}**{$attendWith} - {$this->registration->total_count} khách\n" .

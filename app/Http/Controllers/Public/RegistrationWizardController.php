@@ -348,7 +348,7 @@ class RegistrationWizardController extends Controller
         // Send ntfy notification to admins
         try {
             Log::info('Attempting to send ntfy notification for registration: ' . $registration->id);
-            Notification::route('ntfy', 'tiec_tra_shenyun_alerts')
+            Notification::route('ntfy', config('ntfy-notification-channel.topic'))
                 ->notify(new NewEventRegistration($registration));
             Log::info('Ntfy notification sent successfully');
         } catch (\Exception $e) {
