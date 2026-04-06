@@ -378,7 +378,8 @@ class RegistrationController extends Controller
 
         $registration->update($data);
 
-        if ($registration->status === 'confirmed') {
+        // Recalculate for pending and confirmed registrations
+        if (in_array($registration->status, ['pending', 'confirmed'])) {
             if ($oldSessionId !== $registration->event_session_id) {
                 EventSession::recalculateReserved($oldSessionId);
                 EventSession::recalculateReserved($registration->event_session_id);
@@ -423,14 +424,12 @@ class RegistrationController extends Controller
 
     public function destroy(Registration $registration)
     {
-        $wasConfirmed = $registration->status === 'confirmed';
         $sessionId = $registration->event_session_id;
 
         $registration->delete();
 
-        if ($wasConfirmed) {
-            EventSession::recalculateReserved($sessionId);
-        }
+        // Always recalculate reserved capacity when deleting
+        EventSession::recalculateReserved($sessionId);
 
         $redirectTo = request()->input('redirect_to', '/admin/registrations');
         return redirect()->to($redirectTo)->with('success', 'Đã xóa đăng ký.');
