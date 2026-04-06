@@ -3,20 +3,21 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RegistrationConfirmed;
 use App\Models\EventSession;
 use App\Models\Registration;
 use App\Models\Venue;
-use App\Mail\RegistrationConfirmed;
+use App\Notifications\NewEventRegistration;
 use App\Services\SessionGeneratorService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Carbon;
 
 class RegistrationWizardController extends Controller
 {
@@ -344,23 +345,15 @@ class RegistrationWizardController extends Controller
             Mail::to($registration->email)->send(new RegistrationConfirmed($registration));
         }
 
-        // Send push notification to admins via OneSignal
+        // Send ntfy notification to admins
         try {
-            Http::withHeaders([
-                'Authorization' => 'Basic ' . config('services.onesignal.rest_api_key'),
-                'Content-Type' => 'application/json',
-            ])->post('https://onesignal.com/api/v1/notifications', [
-                'app_id' => config('services.onesignal.app_id'),
-                'included_segments' => ['Subscribed Users'],
-                'contents' => [
-                    'en' => "New registration: {$registration->full_name} with {$registration->total_count} guests",
-                ],
-                'headings' => [
-                    'en' => 'New Registration',
-                ],
-            ]);
+            Log::info('Attempting to send ntfy notification for registration: ' . $registration->id);
+            Notification::route('ntfy', 'tiec_tra_shenyun_alerts')
+                ->notify(new NewEventRegistration($registration));
+            Log::info('Ntfy notification sent successfully');
         } catch (\Exception $e) {
-            Log::warning('OneSignal push notification failed: ' . $e->getMessage());
+            Log::error('Ntfy notification failed: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
         }
 
         Session::forget(self::DRAFT_KEY);
