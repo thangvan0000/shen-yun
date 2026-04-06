@@ -49,7 +49,7 @@ class EventSession extends Model
     {
         $reserved = Registration::query()
             ->where('event_session_id', $sessionId)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['pending', 'confirmed'])
             ->sum('total_count');
 
         self::query()->whereKey($sessionId)->update(['capacity_reserved' => $reserved]);
