@@ -63,18 +63,22 @@ class NewEventRegistration extends Notification
         $message->title("Tiệc trà {$venueName} - Đăng ký mới!");
         $message->icon('https://yeushenyun.com/shen-yun.webp');
 
+        $remainingText = $remaining === 0
+            ? "Đã FULL **{$session->capacity_total}** ghế"
+            : "Còn lại: **{$remaining}/{$session->capacity_total}** ghế";
+
         $message->markdownBody(
             "**{$this->registration->full_name}**{$attendWith} - 👥 **{$this->registration->total_count}** khách:\n" .
             "_{$guestInfo}_\n\n" .
             "🗓 **{$dayOfWeek} {$dateTime}**\n" .
-            "🎫 Còn lại: **{$remaining}/{$session->capacity_total}** ghế"
+            "🎫 {$remainingText}"
         );
 
         $message->priority(Message::PRIORITY_HIGH);
         $message->tags(['registration', 'event']);
 
         $message->clickAction(
-            url("/admin/registrations/{$this->registration->id}/edit")
+            url("/admin/registrations")
         );
 
         return $message;
