@@ -78,7 +78,7 @@ class NewEventRegistration extends Notification
         $message->tags(['registration', 'event']);
 
         $message->clickAction(
-            url("/admin/registrations")
+            config('app.url') . "/admin/registrations"
         );
 
         return $message;
