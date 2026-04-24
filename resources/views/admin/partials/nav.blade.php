@@ -3,6 +3,7 @@
         ['url' => '/admin/registrations', 'label' => 'Danh sách', 'icon' => 'list_alt'],
         ['url' => '/admin/venues', 'label' => 'Địa điểm', 'icon' => 'location_on'],
         ['url' => '/admin/sessions', 'label' => 'Trình chiếu', 'icon' => 'present_to_all'],
+        ['url' => '/admin/reports',  'label' => 'Báo cáo',     'icon' => 'bar_chart'],
     ];
 @endphp
 

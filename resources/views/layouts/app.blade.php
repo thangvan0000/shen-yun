@@ -260,8 +260,10 @@
                     });
                 });
             </script>
+
+            @stack('scripts')
         </body>
-    @else
+@else
         <body class="min-h-dvh bg-transparent text-neutral-900">
             <div class="min-h-dvh flex flex-col admin-container">
                 <header class="admin-header">
