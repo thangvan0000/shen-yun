@@ -63,15 +63,6 @@
                         @include('admin.partials.nav')
                     </nav>
 
-                    <div class="mt-auto pt-4 border-t border-outline-variant/30">
-                         <form method="post" action="{{ url('/admin/logout') }}">
-                            @csrf
-                            <button class="cursor-pointer flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group overflow-hidden whitespace-nowrap">
-                                <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">logout</span>
-                                <span class="sidebar-text">Đăng xuất</span>
-                            </button>
-                        </form>
-                    </div>
                 </aside>
 
                 <!-- Main Area -->
@@ -253,8 +244,10 @@
                     });
                 });
             </script>
+
+            @stack('scripts')
         </body>
-    @else
+@else
         <body class="min-h-dvh bg-transparent text-neutral-900">
             <div class="min-h-dvh flex flex-col admin-container">
                 <header class="admin-header">
