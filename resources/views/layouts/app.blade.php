@@ -231,6 +231,8 @@
                     }
                 });
             </script>
+
+            @stack('scripts')
         </body>
     @else
         <body class="min-h-dvh bg-transparent text-neutral-900">

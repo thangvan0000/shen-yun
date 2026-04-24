@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\EventSessionController;
 use App\Http\Controllers\Admin\RegistrationController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SessionTemplateController;
 use App\Http\Controllers\Admin\VenueController;
 use App\Http\Controllers\Public\RegisterAccessController;
@@ -75,6 +76,8 @@ Route::middleware(['admin.authed'])->group(function () {
     Route::get('/admin/venues/{venue}/edit', [VenueController::class, 'edit']);
     Route::put('/admin/venues/{venue}', [VenueController::class, 'update']);
     Route::delete('/admin/venues/{venue}', [VenueController::class, 'destroy']);
+
+    Route::get('/admin/reports', [ReportController::class, 'index']);
 
     Route::get('/admin/templates', [SessionTemplateController::class, 'index']);
     Route::get('/admin/templates/create', [SessionTemplateController::class, 'create']);
