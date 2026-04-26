@@ -34,10 +34,10 @@
     {{-- Summary Cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach ([
-            ['Khách',    $totals['adult'],   'person',        'bg-blue-50 text-blue-700'],
-            ['NTL',      $totals['ntl'],     'groups',        'bg-violet-50 text-violet-700'],
-            ['NTL mới',  $totals['ntl_new'], 'person_add',    'bg-amber-50 text-amber-700'],
-            ['Trẻ em',   $totals['child'],   'child_care',    'bg-rose-50 text-rose-700'],
+            ['Khách',    $totals['adult'],   'person',     'bg-blue-50   text-[#0058bc]'],
+            ['NTL',      $totals['ntl'],     'groups',     'bg-amber-50  text-[#b8913a]'],
+            ['NTL mới',  $totals['ntl_new'], 'person_add', 'bg-emerald-50 text-[#2d6a4f]'],
+            ['Trẻ em',   $totals['child'],   'child_care', 'bg-red-50    text-[#c2564a]'],
         ] as [$label, $value, $icon, $colorClass])
         <div class="admin-card p-5 flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl {{ $colorClass }} flex items-center justify-center shrink-0">
@@ -69,32 +69,32 @@
         {
             label: 'Khách',
             data: @json($adultData),
-            backgroundColor: 'rgba(59,130,246,0.75)',
-            borderColor: 'rgba(59,130,246,1)',
+            backgroundColor: 'rgba(0,88,188,0.75)',
+            borderColor: '#0058bc',
             borderWidth: 1,
             borderRadius: 6,
         },
         {
             label: 'NTL',
             data: @json($ntlData),
-            backgroundColor: 'rgba(139,92,246,0.75)',
-            borderColor: 'rgba(139,92,246,1)',
+            backgroundColor: 'rgba(217,183,111,0.80)',
+            borderColor: '#d9b76f',
             borderWidth: 1,
             borderRadius: 6,
         },
         {
             label: 'NTL mới',
             data: @json($ntlNewData),
-            backgroundColor: 'rgba(245,158,11,0.75)',
-            borderColor: 'rgba(245,158,11,1)',
+            backgroundColor: 'rgba(45,106,79,0.75)',
+            borderColor: '#2d6a4f',
             borderWidth: 1,
             borderRadius: 6,
         },
         {
             label: 'Trẻ em',
             data: @json($childData),
-            backgroundColor: 'rgba(244,63,94,0.75)',
-            borderColor: 'rgba(244,63,94,1)',
+            backgroundColor: 'rgba(194,86,74,0.75)',
+            borderColor: '#c2564a',
             borderWidth: 1,
             borderRadius: 6,
         },
