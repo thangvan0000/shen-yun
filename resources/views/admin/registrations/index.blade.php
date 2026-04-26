@@ -119,19 +119,7 @@
                                 </a>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
-                                @if($r->phone)
-                                    <details class="phone-dropdown relative">
-                                        <summary class="list-none cursor-pointer text-neutral-900 hover:underline">
-                                            {{ $r->phone }}
-                                        </summary>
-                                        <div class="absolute z-10 mt-1 w-24 rounded-lg border border-neutral-200 bg-white py-1 shadow-lg">
-                                            <a href="tel:{{ $r->phone }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Call</a>
-                                            <a href="https://zalo.me/{{ $r->phone }}" target="_blank" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">Zalo</a>
-                                        </div>
-                                    </details>
-                                @else
-                                    <div class="text-neutral-900">—</div>
-                                @endif
+                                <div class="text-neutral-900">{{ $r->phone ?? '—' }}</div>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <div class="font-semibold text-neutral-900">{{ $r->eventSession->starts_at->format('d/m/Y H:i') }}</div>
@@ -271,7 +259,6 @@
             });
         }
     </script>
-
     <style>
         .sticky-col.is-stuck::after {
             content: '';
