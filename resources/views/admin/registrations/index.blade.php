@@ -121,23 +121,7 @@
                                 </a>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
-                                @if($r->phone)
-                                    <div class="phone-hover-group relative inline-block">
-                                        <span class="cursor-default text-neutral-900">{{ $r->phone }}</span>
-                                        <div class="phone-actions absolute left-0 top-full z-10 mt-1 hidden flex-col rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-lg w-32">
-                                            <a href="tel:{{ $r->phone }}" class="flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-700 hover:bg-emerald-50 transition-colors">
-                                                <span class="material-symbols-outlined text-[18px] text-emerald-600">call</span>
-                                                <span class="font-medium">Gọi điện</span>
-                                            </a>
-                                            <a href="https://zalo.me/{{ $r->phone }}" target="_blank" class="flex items-center gap-2.5 px-3 py-2.5 text-sm text-neutral-700 hover:bg-blue-50 transition-colors">
-                                                <img src="https://page.widget.zalo.me/static/images/2.0/Logo.svg" alt="Zalo" class="w-[18px] h-[18px]">
-                                                <span class="font-medium">Zalo</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="text-neutral-900">—</div>
-                                @endif
+                                <div class="text-neutral-900">{{ $r->phone ?? '—' }}</div>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <div class="font-semibold text-neutral-900">{{ $r->eventSession->starts_at->format('d/m/Y H:i') }}</div>
@@ -275,11 +259,5 @@
             });
         }
     </script>
-    <style>
-        .phone-hover-group:hover .phone-actions,
-        .phone-hover-group .phone-actions:hover {
-            display: flex !important;
-        }
-    </style>
 @endsection
 
