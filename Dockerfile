@@ -28,4 +28,7 @@ RUN npm install && npm run build
 
 EXPOSE $PORT
 
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Make startup script executable
+RUN chmod +x /var/www/html/startup.sh
+
+CMD ["/var/www/html/startup.sh"]
