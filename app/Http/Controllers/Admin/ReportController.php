@@ -46,7 +46,6 @@ class ReportController extends Controller
         $nextUrl = $start->lt($currentPeriodStart)
             ? url('/admin/reports') . '?filter=' . $filter . '&date=' . $nextAnchor->toDateString()
             : null;
-
         $rows = Registration::query()
             ->whereBetween('created_at', [$start, $end])
             ->select(
@@ -93,4 +92,3 @@ class ReportController extends Controller
         ));
     }
 }
-

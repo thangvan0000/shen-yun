@@ -7,8 +7,6 @@ use App\Models\EventSession;
 use App\Models\Registration;
 use App\Models\Venue;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\NewEventRegistration;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RegistrationController extends Controller
@@ -20,7 +18,7 @@ class RegistrationController extends Controller
 
         // Prevent Excel formula injection
         if ($s !== '' && preg_match('/^[=+\\-@]/', $s)) {
-            $s = "'" . $s;
+            $s = "'".$s;
         }
 
         return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -28,60 +26,55 @@ class RegistrationController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->query('status') ?: null;
-        $search = $request->query('search') ?: null;
-
-        $sessions = EventSession::query()
-            ->with('venue')
-            ->orderBy('starts_at', 'desc')
-            ->get();
-
-        $sessionIdParam = $request->query('session_id'); // null = no param, 'all' = tất cả, else = id
-
-        if ($sessionIdParam === null) {
-            // Default: first session in current week
-            $weekStart = now()->startOfWeek();
-            $weekEnd = now()->endOfWeek();
-            $default = $sessions->first(fn($s) => $s->starts_at->between($weekStart, $weekEnd));
-            $sessionId = $default ? (string) $default->id : null;
-        } elseif ($sessionIdParam === 'all') {
-            $sessionId = null; // no filter
-        } else {
-            $sessionId = $sessionIdParam;
-        }
-
         $query = Registration::query()
             ->join('event_sessions', 'registrations.event_session_id', '=', 'event_sessions.id')
             ->select('registrations.*')
             ->with('eventSession.venue')
             ->orderByDesc('event_sessions.starts_at');
 
+        $status = $request->query('status');
         if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
             $query->where('registrations.status', $status);
         }
 
+        $sessionId = $request->query('session_id');
         if ($sessionId) {
             $query->where('registrations.event_session_id', $sessionId);
         }
 
+        $search = $request->query('search');
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function($q) use ($search) {
+                // Search in phone
                 $q->where('registrations.phone', 'like', "%{$search}%");
+                
+                // If starts with 0, also search for +84
                 if (str_starts_with($search, '0')) {
-                    $q->orWhere('registrations.phone', 'like', '%+84' . substr($search, 1) . '%');
-                } elseif (str_starts_with($search, '+84')) {
-                    $q->orWhere('registrations.phone', 'like', '%0' . substr($search, 3) . '%');
+                    $alt = '+84' . substr($search, 1);
+                    $q->orWhere('registrations.phone', 'like', "%{$alt}%");
+                } 
+                // If starts with +84, also search for 0
+                elseif (str_starts_with($search, '+84')) {
+                    $alt = '0' . substr($search, 3);
+                    $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
-                $q->orWhereRaw('LOWER(registrations.full_name) LIKE ?', ['%' . mb_strtolower($search) . '%']);
+                
+                // Search in full_name (inviter)
+                $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
 
         $regs = $query->paginate(30)->withQueryString();
 
+        $sessions = EventSession::query()
+            ->with('venue')
+            ->orderBy('starts_at', 'desc')
+            ->get();
+
         return view('admin.registrations.index', [
             'registrations' => $regs,
             'statusFilter' => $status,
-            'sessionIdFilter' => $sessionIdParam ?? $sessionId, // 'all', specific id, or default id
+            'sessionIdFilter' => $sessionId,
             'searchFilter' => $search,
             'sessions' => $sessions,
         ]);
@@ -107,9 +100,9 @@ class RegistrationController extends Controller
 
         $search = $request->query('search');
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function($q) use ($search) {
                 $q->where('registrations.phone', 'like', "%{$search}%");
-
+                
                 if (str_starts_with($search, '0')) {
                     $alt = '+84' . substr($search, 1);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
@@ -117,7 +110,7 @@ class RegistrationController extends Controller
                     $alt = '0' . substr($search, 3);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
-
+                
                 $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
@@ -217,9 +210,9 @@ class RegistrationController extends Controller
 
         $search = $request->query('search');
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $query->where(function($q) use ($search) {
                 $q->where('registrations.phone', 'like', "%{$search}%");
-
+                
                 if (str_starts_with($search, '0')) {
                     $alt = '+84' . substr($search, 1);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
@@ -227,7 +220,7 @@ class RegistrationController extends Controller
                     $alt = '0' . substr($search, 3);
                     $q->orWhere('registrations.phone', 'like', "%{$alt}%");
                 }
-
+                
                 $q->orWhere('registrations.full_name', 'like', "%{$search}%");
             });
         }
@@ -281,7 +274,7 @@ class RegistrationController extends Controller
             ];
 
             foreach ($headers as $h) {
-                fwrite($out, '<th>' . $this->excelEscape($h) . '</th>');
+                fwrite($out, '<th>'.$this->excelEscape($h).'</th>');
             }
             fwrite($out, "</tr></thead>\n<tbody>\n");
 
@@ -305,7 +298,7 @@ class RegistrationController extends Controller
                     ];
 
                     foreach ($cells as $c) {
-                        fwrite($out, '<td>' . $this->excelEscape($c) . '</td>');
+                        fwrite($out, '<td>'.$this->excelEscape($c).'</td>');
                     }
                     fwrite($out, "</tr>\n");
                 }
@@ -323,10 +316,7 @@ class RegistrationController extends Controller
         $venues = Venue::query()->orderBy('name')->get();
         $sessions = EventSession::query()
             ->with('venue')
-            ->where(function ($q) use ($registration) {
-                $q->where('starts_at', '>=', now())
-                    ->orWhere('id', $registration->event_session_id);
-            })
+            ->where('starts_at', '>=', now())
             ->orderBy('starts_at')
             ->get();
 
@@ -341,35 +331,24 @@ class RegistrationController extends Controller
     {
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone_country' => ['nullable', 'string', 'max:8'],
-            'phone_number' => ['nullable', 'string', 'regex:/^[0-9]{9,11}$/'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'regex:/^[0-9]{9,11}$/'],
             'event_session_id' => ['required', 'exists:event_sessions,id'],
             'adult_count' => ['required', 'integer', 'min:0', 'max:999'],
             'ntl_count' => ['required', 'integer', 'min:0', 'max:999'],
             'ntl_new_count' => ['required', 'integer', 'min:0', 'max:999'],
             'child_count' => ['required', 'integer', 'min:0', 'max:999'],
             'attend_with_guest' => ['required', 'in:0,1'],
-        ], [
-            'phone_number.regex' => 'Số điện thoại không hợp lệ.',
         ]);
 
-        // Assemble phone from country + number
-        $phone = null;
-        $country = trim((string) ($data['phone_country'] ?? ''));
-        $number = preg_replace('/\D+/', '', (string) ($data['phone_number'] ?? ''));
-        $number = ltrim($number, '0');
-        if ($number !== '') {
-            $country = $country !== '' ? $country : '+84';
-            if (!str_starts_with($country, '+')) {
-                $country = '+' . $country;
-            }
-            $phone = $country . $number;
+        if (!empty($data['phone'])) {
+            $data['phone'] = ltrim(preg_replace('/\D+/', '', (string)$data['phone']), '0');
         }
-        $data['phone'] = $phone;
-        unset($data['phone_country'], $data['phone_number']);
 
         $data['attend_with_guest'] = (bool) $data['attend_with_guest'];
+
+        $oldSessionId = $registration->event_session_id;
+        $oldTotalCount = $registration->total_count;
 
         $total = (int) $data['adult_count']
             + (int) $data['ntl_count']
@@ -378,151 +357,72 @@ class RegistrationController extends Controller
 
         $data['total_count'] = $total;
 
-        try {
-            \Illuminate\Support\Facades\DB::transaction(function () use ($registration, $data, $total) {
-                $oldSessionId = $registration->event_session_id;
-                $newSessionId = (int) $data['event_session_id'];
-                $oldTotalCount = $registration->total_count;
-                $isCancelled = $registration->status === 'cancelled';
+        $registration->update($data);
 
-                // Lock the target session to prevent race conditions
-                $targetSession = EventSession::whereKey($newSessionId)->lockForUpdate()->firstOrFail();
-
-                // Calculate available seats for this specific update
-                if ($oldSessionId === $newSessionId) {
-                    // Current count is already in 'capacity_reserved' if status was NOT cancelled
-                    $alreadyReservedByOthers = $isCancelled ? $targetSession->capacity_reserved : ($targetSession->capacity_reserved - $oldTotalCount);
-                } else {
-                    // New session's reserved count doesn't include this registration yet
-                    $alreadyReservedByOthers = $targetSession->capacity_reserved;
-                }
-
-                $remaining = $targetSession->capacity_total - $alreadyReservedByOthers;
-
-                if ($total > $remaining) {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
-                        'error' => "Không đủ chỗ. Chỉ còn {$remaining} chỗ trống!"
-                    ]);
-                }
-
-                $registration->update($data);
-
-                // Recalculate after the update
+        if ($registration->status === 'confirmed') {
+            if ($oldSessionId !== $registration->event_session_id) {
                 EventSession::recalculateReserved($oldSessionId);
-                if ($oldSessionId !== $newSessionId) {
-                    EventSession::recalculateReserved($newSessionId);
-                }
-
-                // Notify if session is in the future and key info changed
-                $targetSession->refresh(); // Ensures reserved is updated for the notification message
-                if (!$targetSession->starts_at->isPast() && ($oldTotalCount !== $total || $oldSessionId !== $newSessionId)) {
-                    try {
-                        Notification::route('ntfy', config('ntfy-notification-channel.topic'))
-                            ->notify(new NewEventRegistration($registration, 'updated'));
-                    } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error('Ntfy notification failed (update): ' . $e->getMessage());
-                    }
-                }
-            });
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Có lỗi xảy ra khi cập nhật: ' . $e->getMessage()])->withInput();
+                EventSession::recalculateReserved($registration->event_session_id);
+            } elseif ($oldTotalCount !== $total) {
+                EventSession::recalculateReserved($registration->event_session_id);
+            }
         }
 
-        $redirectTo = $request->query('back', '/admin/registrations');
-        return redirect()->to($redirectTo)->with('success', 'Cập nhật thành công.');
+        return redirect()->to('/admin/registrations')->with('success', 'Cập nhật thành công.');
     }
 
     public function confirm(Registration $registration)
     {
-        $session = $registration->eventSession;
-        $oldStatus = $registration->status;
-
-        // 1. Check if session is past
-        if ($session->starts_at->isPast()) {
-            return back()->withErrors(['error' => 'Không thể xác nhận đăng ký cho trình chiếu đã kết thúc.']);
-        }
-
-        // 2. Check capacity if moving from cancelled
-        if ($oldStatus === 'cancelled') {
-            $totalGuests = $registration->total_count;
-            $remaining = $session->capacity_total - $session->capacity_reserved;
-
-            if ($totalGuests > $remaining) {
-                return back()->withErrors(['error' => "Không thể kích hoạt lại. Buổi trình chiếu này chỉ còn {$remaining} chỗ trống, nhưng đăng ký này yêu cầu {$totalGuests} chỗ."]);
-            }
-        }
-
+        $sessionId = $registration->event_session_id;
         $registration->update(['status' => 'confirmed']);
-        EventSession::recalculateReserved($registration->event_session_id);
+        EventSession::recalculateReserved($sessionId);
 
-        // Notify ONLY if re-activating from cancelled (affects available capacity)
-        if ($oldStatus === 'cancelled' && !$session->starts_at->isPast()) {
-            $session->refresh();
-            try {
-                Notification::route('ntfy', config('ntfy-notification-channel.topic'))
-                    ->notify(new NewEventRegistration($registration, 'reactivated'));
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Ntfy notification failed (confirm): ' . $e->getMessage());
-            }
+        return redirect()->to('/admin/registrations')->with('success', 'Đã xác nhận đăng ký.');
+    }
+
+    public function updateStatus(Registration $registration, \Illuminate\Http\Request $request)
+    {
+        $new = $request->input('status');
+        if (!in_array($new, ['pending', 'confirmed', 'cancelled'])) {
+            return back();
         }
 
-        $redirectTo = request()->input('redirect_to', '/admin/registrations');
-        return redirect()->to($redirectTo)->with('success', 'Đã xác nhận đăng ký.');
+        $old = $registration->status;
+        $sessionId = $registration->event_session_id;
+
+        $registration->update(['status' => $new]);
+
+        if ($old !== $new) {
+            EventSession::recalculateReserved($sessionId);
+        }
+
+        return back()->with('success', 'Đã cập nhật trạng thái.');
+    }
+
+    public function markPending(Registration $registration)
+    {
+        $sessionId = $registration->event_session_id;
+        $registration->update(['status' => 'pending']);
+        EventSession::recalculateReserved($sessionId);
+
+        return redirect()->to('/admin/registrations')->with('success', 'Đã chuyển về chờ xác nhận.');
     }
 
     public function cancel(Registration $registration)
     {
-        $oldStatus = $registration->status;
+        $sessionId = $registration->event_session_id;
         $registration->update(['status' => 'cancelled']);
-        $session = $registration->eventSession;
-        EventSession::recalculateReserved($registration->event_session_id);
+        EventSession::recalculateReserved($sessionId);
 
-        // Notify ONLY if cancelling a group that was actually reserving seats
-        if (in_array($oldStatus, ['pending', 'confirmed']) && !$session->starts_at->isPast()) {
-            $session->refresh();
-            try {
-                Notification::route('ntfy', config('ntfy-notification-channel.topic'))
-                    ->notify(new NewEventRegistration($registration, 'cancelled'));
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Ntfy notification failed (cancel): ' . $e->getMessage());
-            }
-        }
-
-        $redirectTo = request()->input('redirect_to', '/admin/registrations');
-        return redirect()->to($redirectTo)->with('success', 'Đã hủy đăng ký.');
+        return redirect()->to('/admin/registrations')->with('success', 'Đã hủy đăng ký.');
     }
 
     public function destroy(Registration $registration)
     {
         $sessionId = $registration->event_session_id;
-        $session = $registration->eventSession;
-
-        // 1. Double check: Cannot delete if session is in the past
-        if ($session && $session->starts_at->isPast()) {
-            return back()->withErrors(['error' => 'Không thể xóa dữ liệu của suất chiếu đã kết thúc trong quá khứ.']);
-        }
-
-        $oldStatus = $registration->status;
-
         $registration->delete();
-
-        // Always recalculate reserved capacity when deleting
         EventSession::recalculateReserved($sessionId);
 
-        // Notify ONLY if deleting a group that was actually reserving seats
-        if (in_array($oldStatus, ['pending', 'confirmed']) && $session && !$session->starts_at->isPast()) {
-            $session->refresh();
-            try {
-                Notification::route('ntfy', config('ntfy-notification-channel.topic'))
-                    ->notify(new NewEventRegistration($registration, 'deleted'));
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Ntfy notification failed (destroy): ' . $e->getMessage());
-            }
-        }
-
-        $redirectTo = request()->input('redirect_to', '/admin/registrations');
-        return redirect()->to($redirectTo)->with('success', 'Đã xóa đăng ký.');
+        return redirect()->to('/admin/registrations')->with('success', 'Đã xóa đăng ký.');
     }
 }
