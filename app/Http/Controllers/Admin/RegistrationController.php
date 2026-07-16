@@ -101,7 +101,7 @@ class RegistrationController extends Controller
         }
 
         $sessionId = $request->query('session_id');
-        if ($sessionId) {
+        if ($sessionId && $sessionId !== 'all') {
             $query->where('registrations.event_session_id', $sessionId);
         }
 
@@ -211,7 +211,7 @@ class RegistrationController extends Controller
         }
 
         $sessionId = $request->query('session_id');
-        if ($sessionId) {
+        if ($sessionId && $sessionId !== 'all') {
             $query->where('registrations.event_session_id', $sessionId);
         }
 
