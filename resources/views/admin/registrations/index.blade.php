@@ -11,6 +11,7 @@
                 </div>
 
                 <a
+                    id="exportXlsBtn"
                     href="{{ url('/admin/registrations/export.xls') }}?status={{ $statusFilter }}&session_id={{ $sessionIdFilter }}&search={{ $searchFilter }}"
                     class="inline-flex items-center justify-center rounded-3xl bg-[#1a1a1a] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800"
                 >
@@ -218,6 +219,16 @@
             if (session) url.searchParams.set('session_id', session);
             if (status) url.searchParams.set('status', status);
             if (search) url.searchParams.set('search', search);
+
+            // Update export button URL dynamically to match filters
+            const exportBtn = document.getElementById('exportXlsBtn');
+            if (exportBtn) {
+                let exportUrl = new URL('{{ url("/admin/registrations/export.xls") }}');
+                if (session) exportUrl.searchParams.set('session_id', session);
+                if (status) exportUrl.searchParams.set('status', status);
+                if (search) exportUrl.searchParams.set('search', search);
+                exportBtn.href = exportUrl.toString();
+            }
 
             history.pushState(null, '', url.toString());
 
