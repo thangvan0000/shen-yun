@@ -7,21 +7,41 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-extrabold tracking-tight text-on-surface">Báo cáo đăng ký</h1>
-            <p class="text-sm text-on-surface-variant mt-1">
-                {{ $start->format('d/m/Y') }} – {{ $end->format('d/m/Y') }}
-            </p>
+            {{-- Date range with prev/next navigation --}}
+            <div class="flex items-center gap-2 mt-1">
+                <a href="{{ $prevUrl }}"
+                   class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors"
+                   title="Kỳ trước">
+                    <span class="material-symbols-outlined text-sm">chevron_left</span>
+                </a>
+                <span class="text-sm text-on-surface-variant font-medium">
+                    {{ $start->format('d/m/Y') }} – {{ $end->format('d/m/Y') }}
+                </span>
+                @if($nextUrl)
+                    <a href="{{ $nextUrl }}"
+                       class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors"
+                       title="Kỳ sau">
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                @else
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-surface-container text-on-surface-variant/30 cursor-not-allowed"
+                          title="Đây là kỳ hiện tại">
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </span>
+                @endif
+            </div>
         </div>
 
         {{-- Filter toggle --}}
         <div class="flex items-center gap-2">
-            <a href="{{ url('/admin/reports?filter=week') }}"
+            <a href="{{ url('/admin/reports') . '?filter=week&date=' . $start->toDateString() }}"
                class="px-4 py-2 rounded-xl text-sm font-semibold transition-all
                       {{ $filter === 'week'
                          ? 'bg-primary text-on-primary shadow-sm'
                          : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest' }}">
                 Theo tuần
             </a>
-            <a href="{{ url('/admin/reports?filter=month') }}"
+            <a href="{{ url('/admin/reports') . '?filter=month&date=' . $start->toDateString() }}"
                class="px-4 py-2 rounded-xl text-sm font-semibold transition-all
                       {{ $filter === 'month'
                          ? 'bg-primary text-on-primary shadow-sm'
