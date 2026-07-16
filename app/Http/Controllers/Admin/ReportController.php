@@ -14,14 +14,38 @@ class ReportController extends Controller
     {
         $filter = in_array($request->query('filter'), ['week', 'month']) ? $request->query('filter') : 'week';
 
+        // Parse the anchor date from query string, default to today
+        $anchorDate = $request->query('date')
+            ? Carbon::parse($request->query('date'))->startOfDay()
+            : Carbon::now()->startOfDay();
+
         if ($filter === 'week') {
-            $start = Carbon::now()->startOfWeek();
-            $end   = Carbon::now()->endOfWeek();
+            $start = $anchorDate->copy()->startOfWeek();
+            $end   = $anchorDate->copy()->endOfWeek();
         } else {
-            $start = Carbon::now()->startOfMonth();
-            $end   = Carbon::now()->endOfMonth();
+            $start = $anchorDate->copy()->startOfMonth();
+            $end   = $anchorDate->copy()->endOfMonth();
         }
 
+        // Determine prev/next anchor dates
+        if ($filter === 'week') {
+            $prevAnchor = $anchorDate->copy()->subWeek();
+            $nextAnchor = $anchorDate->copy()->addWeek();
+        } else {
+            $prevAnchor = $anchorDate->copy()->subMonth();
+            $nextAnchor = $anchorDate->copy()->addMonth();
+        }
+
+        // Build prev/next URLs; disable next if it goes beyond current week/month
+        $prevUrl = url('/admin/reports') . '?filter=' . $filter . '&date=' . $prevAnchor->toDateString();
+
+        $currentPeriodStart = $filter === 'week'
+            ? Carbon::now()->startOfWeek()
+            : Carbon::now()->startOfMonth();
+
+        $nextUrl = $start->lt($currentPeriodStart)
+            ? url('/admin/reports') . '?filter=' . $filter . '&date=' . $nextAnchor->toDateString()
+            : null;
         $rows = Registration::query()
             ->whereBetween('created_at', [$start, $end])
             ->select(
@@ -63,7 +87,8 @@ class ReportController extends Controller
         ];
 
         return view('admin.reports.index', compact(
-            'filter', 'labels', 'adultData', 'ntlData', 'ntlNewData', 'childData', 'totals', 'start', 'end'
+            'filter', 'labels', 'adultData', 'ntlData', 'ntlNewData', 'childData', 'totals', 'start', 'end',
+            'prevUrl', 'nextUrl'
         ));
     }
 }
